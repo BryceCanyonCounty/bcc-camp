@@ -28,5 +28,5 @@ dependencies {
     'vorp_inventory',
     'vorp_utils',
     'bcc-utils',
-    'vorp_character;,
+    'vorp_character',
 }
