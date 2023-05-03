@@ -24,6 +24,7 @@
 - VORP Core
 - VORP Inventory
 - VORP Utils
+- VORP Character
 - bcc-utils
 
 # Side Notes
