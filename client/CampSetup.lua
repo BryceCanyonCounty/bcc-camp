@@ -14,6 +14,13 @@ local fasttravelpost
 local broll
 local blip
 
+------- Event To Register Inv After Char Selection ------
+RegisterNetEvent('vorp:SelectedCharacter')
+AddEventHandler('vorp:SelectedCharacter', function(charid)
+    Wait(7000)
+    TriggerServerEvent('bcc-camp:CampInvCreation', charid)
+end)
+
 ---------------------- Prop Spawning -----------------------------------
 function spawnTent()
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
