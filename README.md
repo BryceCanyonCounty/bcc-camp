@@ -20,6 +20,12 @@
 - Put this file in your resources folder!
 - Add ```ensure bcc-camp``` to your resources.cfg file!
 
+# Requirements
+- VORP Core
+- VORP Inventory
+- VORP Utils
+- bcc-utils
+
 # Side Notes
 - This script is inspired by this script https://github.com/bcortezf/bc_camping
 

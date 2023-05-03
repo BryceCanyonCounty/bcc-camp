@@ -21,11 +21,11 @@ client_scripts {
 }
 
 
-version '1.0.0'
+version '1.0.1'
 
 dependencies {
     'vorp_core',
     'vorp_inventory',
     'vorp_utils',
-    'bcc-versioner',
+    'bcc-utils',
 }
