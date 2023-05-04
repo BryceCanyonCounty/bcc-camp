@@ -13,6 +13,7 @@ local storagechest
 local fasttravelpost
 local broll
 local blip
+local outoftown
 
 ------- Event To Register Inv After Char Selection ------
 RegisterNetEvent('vorp:SelectedCharacter')
@@ -198,6 +199,36 @@ end
 
 
 -- Command Setup
-RegisterCommand(Config.CommandName, function()
-    MainTentmenu()
+Citizen.CreateThread(function()
+    if Config.CampCommand then
+        RegisterCommand(Config.CommandName, function()
+            TriggerEvent('bcc-camp:NearTownCheck')
+        end)
+    end
+end)
+
+----------------------- Distance Check for player to town coordinates --------------------------------
+RegisterNetEvent('bcc-camp:NearTownCheck')
+AddEventHandler('bcc-camp:NearTownCheck', function()
+    if not Config.SetCampInTowns then
+        outoftown = true
+        if Config.CampItem.enabled then
+            TriggerServerEvent('bcc-camp:RemoveCampItem')
+        end
+    else
+        local pl2 = PlayerPedId()
+        for k, e in pairs(Config.Towns) do
+            local pl = GetEntityCoords(pl2)
+            local dist = #(vec2(pl.x, pl.y) - vec2(e.coordinates.x, e.coordinates.y))
+            if dist > e.range then
+                outoftown = true
+            elseif dist < e.range then
+                VORPcore.NotifyRightTip(Config.Language.Tooclosetotown, 4000)
+                outoftown = false break
+            end
+        end
+    end
+    if outoftown then
+        MainTentmenu()
+    end
 end)

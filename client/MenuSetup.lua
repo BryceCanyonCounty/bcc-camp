@@ -43,6 +43,9 @@ function MainTentmenu() --when triggered will open the main menu
             end
             if data.current.value == 'settent' then --if option clicked is this then
                 MenuData.CloseAll()
+                if Config.CampItem.enabled then
+                    TriggerServerEvent('bcc-camp:RemoveCampItem')
+                end
                 spawnTent()
             end
         end)
