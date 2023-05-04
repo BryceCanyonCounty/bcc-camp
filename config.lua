@@ -10,7 +10,10 @@ Config.CampBlips = {
 }
 
 Config.CampRadius = 30 --radius you will be able to place props inside
+Config.CampCommand = true --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
+Config.CampItem = { enabled = false, CampItem = 'water', RemoveItem = true } --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 Config.CommandName = 'SetTent' --name of the command to set the tent
+Config.SetCampInTowns = true --If false players will be able to set camp inside of towns
 
 Config.InventoryLimit = 200 --the camps storage limit
 
@@ -71,11 +74,47 @@ Config.Language = {
 
     --Camp Setup Translations
     CantBuild = 'You can not build here!',
-    InventoryName = 'Camp Storage '
+    InventoryName = 'Camp Storage ',
+    Tooclosetotown = 'You are to close to a town'
 }
 
 
-
+--------------------------------- Town Locations ------------------------------------------------------------------------------------
+------------Ignore This for the most part. Unless you want to change the range of a town, or add more towns -------------------------
+Config.Towns = { --creates a sub table in town table
+    {
+        coordinates = {x = -297.48, y = 791.1, z = 118.33}, --Valentine (the towns coords)
+        range = 150, --The distance away you have to be to be considered outside of town
+    },
+    {
+        coordinates = {x = 2930.95, y = 1348.91, z = 44.1}, --annesburg
+        range = 250,
+    },
+    {
+        coordinates = {x = 2632.52, y = -1312.31, z = 51.42}, --Saint denis
+        range = 600,
+    },
+    {
+        coordinates = {x = 1346.14, y = -1312.5, z = 76.53}, --Rhodes
+        range = 200,
+    },
+    {
+        coordinates = {x = -1801.09, y = -374.86, z = 161.15}, --strawberry
+        range = 150,
+    },
+    {
+        coordinates = {x = -801.77, y = -1336.43, z = 43.54}, --blackwater
+        range = 350
+    },
+    {
+        coordinates = {x = -3659.38, y = -2608.91, z = -14.08}, --armadillo
+        range = 150,
+    },
+    {
+        coordinates = {x = -5498.97, y = -2950.61, z = -1.62}, --Tumbleweed
+        range = 100,
+    }, --You can add more towns by copy and pasting one of the tables above and changing the coords and range to your liking
+}
 
 
 
