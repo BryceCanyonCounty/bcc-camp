@@ -34,7 +34,9 @@ end)
 ----Removing camp item ---
 RegisterServerEvent('bcc-camp:RemoveCampItem', function()
   local _source = source
-  VORPInv.subItem(_source, Config.CampItem.CampItem, 1)
+  if Config.CampItem.RemoveItem then
+    VORPInv.subItem(_source, Config.CampItem.CampItem, 1)
+  end
 end)
 --This handles the version check
 BccUtils.Versioner.checkRelease(GetCurrentResourceName(), 'https://github.com/BryceCanyonCounty/bcc-camp')
