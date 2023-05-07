@@ -5,10 +5,7 @@ local VORPcore = {}
 TriggerEvent("getCore", function(core)
   VORPcore = core
 end)
-local BccUtils = {}
-TriggerEvent('bcc:getUtils', function(bccutils)
-  BccUtils = bccutils
-end)
+local BccUtils = exports['bcc-utils'].initiate()
 
 --Inv creation for camp
 RegisterServerEvent('bcc-camp:CampInvCreation', function(charid)
@@ -34,9 +31,7 @@ end)
 ----Removing camp item ---
 RegisterServerEvent('bcc-camp:RemoveCampItem', function()
   local _source = source
-  if Config.CampItem.RemoveItem then
-    VORPInv.subItem(_source, Config.CampItem.CampItem, 1)
-  end
+  VORPInv.subItem(_source, Config.CampItem.CampItem, 1)
 end)
 --This handles the version check
 BccUtils.Versioner.checkRelease(GetCurrentResourceName(), 'https://github.com/BryceCanyonCounty/bcc-camp')

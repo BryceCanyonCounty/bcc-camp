@@ -14,6 +14,8 @@ Config.CampCommand = true --If true you will set your tent via command (do not h
 Config.CampItem = { enabled = false, CampItem = 'water', RemoveItem = true } --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 Config.CommandName = 'SetTent' --name of the command to set the tent
 Config.SetCampInTowns = true --If false players will be able to set camp inside of towns
+Config.Cooldown = true --if enabled the cooldown will be active
+Config.CooldownTime = 1800000 --time in ms before the player can set a camp again
 
 Config.InventoryLimit = 200 --the camps storage limit
 
@@ -75,7 +77,8 @@ Config.Language = {
     --Camp Setup Translations
     CantBuild = 'You can not build here!',
     InventoryName = 'Camp Storage ',
-    Tooclosetotown = 'You are to close to a town'
+    Tooclosetotown = 'You are to close to a town',
+    Cdown = 'On Cooldown'
 }
 
 
