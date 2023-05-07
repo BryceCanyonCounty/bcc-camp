@@ -43,6 +43,50 @@ Config.FastTravel = {
     }
 }
 
+-------- Model Setup -------
+Config.BedRollModel = 'p_bedrollopen01x' --hash of the bedroll
+Config.Furniture = {
+    Campfires = { --campfire hash
+        {
+            hash = 'p_campfire01x', --model of fire
+        },
+    },
+    Benchs = {
+        {
+            hash = 'p_bench_log03x',
+        },
+    },
+    HitchingPost = {
+        {
+            hash = 'p_hitchingpost01x',
+        },
+    },
+    Tent = {
+        {
+            hash = 'p_ambtentscrub01b',
+        },
+        {
+            hash = 'p_ambtentgrass01x',
+        },
+    },
+    StorageChest = {
+        {
+            hash = 'p_chest01x',
+        },
+    },
+}
+
+--- Any Model Used above MUST be listed here or code will break -----
+Config.PropHashes = {
+    'p_ambtentscrub01b',
+    'p_chest01x',
+    'p_campfire01x',
+    'p_bench_log03x',
+    'p_hitchingpost01x',
+    'mp001_s_fasttravelmarker01x',
+    'p_ambtentgrass01x',
+}
+
 ------------------------------- Translate Here ----------------------------------------
 Config.Language = {
     --Menu Translations
@@ -78,7 +122,8 @@ Config.Language = {
     CantBuild = 'You can not build here!',
     InventoryName = 'Camp Storage ',
     Tooclosetotown = 'You are to close to a town',
-    Cdown = 'On Cooldown'
+    Cdown = 'On Cooldown',
+    FurnMenu = 'Furniture Menu'
 }
 
 
@@ -117,16 +162,4 @@ Config.Towns = { --creates a sub table in town table
         coordinates = {x = -5498.97, y = -2950.61, z = -1.62}, --Tumbleweed
         range = 100,
     }, --You can add more towns by copy and pasting one of the tables above and changing the coords and range to your liking
-}
-
-
-
----------------------------- Dont Touch --------------------------------------
-Config.PropHashes = {
-    'p_ambtentscrub01b',
-    'p_chest01x',
-    'p_campfire01x',
-    'p_bench_log03x',
-    'p_hitchingpost01x',
-    'mp001_s_fasttravelmarker01x',
 }

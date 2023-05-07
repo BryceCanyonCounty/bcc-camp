@@ -20,7 +20,7 @@ RegisterServerEvent('bcc-camp:OpenInv', function()
 end)
 
 ---- Registering Camp Item -----
-Citizen.CreateThread(function()
+CreateThread(function()
   if Config.CampItem.enabled then
     VORPInv.RegisterUsableItem(Config.CampItem.CampItem, function(data)
       TriggerClientEvent('bcc-camp:NearTownCheck', data.source)
