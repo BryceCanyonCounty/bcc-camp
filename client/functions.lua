@@ -7,7 +7,8 @@ VORPutils = {}
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
 end)
-progressbar = exports.vorp_progressbar:initiate() --Allows use of progressbar in code
+progressbar = exports.vorp_progressbar:initiate()
+BccUtils = exports['bcc-utils'].initiate()
 
 ---------------------------- Functions ------------------------------------------------
 
@@ -45,23 +46,6 @@ function notneartentdistcheck(tentobj) --returns true if your too far from tent
     local x,y,z = table.unpack(GetEntityCoords(tentobj))
     local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
     if GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true) > Config.CampRadius then return true else return false end
-end
-
---Creates the ability to use DrawText3D
-function DrawText3D(x, y, z, text)
-	local onScreen,_x,_y=GetScreenCoordFromWorldCoord(x, y, z)
-	local px,py,pz=table.unpack(GetGameplayCamCoord())  
-	local dist = GetDistanceBetweenCoords(px,py,pz, x,y,z, 1)
-	local str = CreateVarString(10, "LITERAL_STRING", text, Citizen.ResultAsLong())
-	if onScreen then
-	  SetTextScale(0.30, 0.30)
-	  SetTextFontForCurrentCommand(1)
-	  SetTextColor(255, 255, 255, 215)
-	  SetTextCentre(1)
-	  DisplayText(str,_x,_y)
-	  local factor = (string.len(text)) / 225
-	  DrawSprite("feeds", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 35, 35, 35, 190, 0)
-	end
 end
 
 --Progressbar

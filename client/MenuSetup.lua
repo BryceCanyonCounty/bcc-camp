@@ -7,8 +7,7 @@ end)
 ------------ Events for cleanup ---------------
 
 --this is used to close the menu while you are on the main menu and hit backspace button
-local inmenu = false --var used to see if you are in the main menu or not
-RegisterNetEvent('bcc-camp:MenuClose')
+local inmenu = false
 AddEventHandler('bcc-camp:MenuClose', function()
     while true do --loops will run permantely
         Citizen.Wait(10) --waits 10ms prevents crashing
@@ -23,7 +22,7 @@ end)
 
 
 ---------------------- Main Camp Menu Setup -----------------------------------
-
+local cdown = false
 function MainTentmenu() --when triggered will open the main menu
     inmenu = true --changes var to true allowing the press of backspace to close the menu
     TriggerEvent('bcc-camp:MenuClose') --triggers the event
@@ -43,10 +42,22 @@ function MainTentmenu() --when triggered will open the main menu
             end
             if data.current.value == 'settent' then --if option clicked is this then
                 MenuData.CloseAll()
-                if Config.CampItem.enabled then
-                    TriggerServerEvent('bcc-camp:RemoveCampItem')
+                if Config.Cooldown then
+                    if not cdown then
+                        if Config.CampItem.enabled then
+                            TriggerServerEvent('bcc-camp:RemoveCampItem')
+                        end
+                        cdown = true
+                        spawnTent()
+                    else
+                        VORPcore.NotifyRightTip(Config.Language.Cdown, 4000)
+                    end
+                else
+                    if Config.CampItem.enabled then
+                        TriggerServerEvent('bcc-camp:RemoveCampItem')
+                    end
+                    spawnTent()
                 end
-                spawnTent()
             end
         end)
 end
@@ -78,16 +89,16 @@ function MainCampmenu() --when triggered will open the main menu
                 delcamp()
             elseif data.current.value == 'setcfire' then --if option clicked is this then
                 MenuData.CloseAll()
-                spawnCampFire()
+                spawnItem('campfire', 'p_campfire01x')
             elseif data.current.value == 'setcbench' then
                 MenuData.CloseAll()
-                spawnLogBench()
+                spawnItem('bench', 'p_bench_log03x')
             elseif data.current.value == 'setcstoragechest' then
                 MenuData.CloseAll()
                 spawnStorageChest()
             elseif data.current.value == 'setchitchingpost' then
                 MenuData.CloseAll()
-                spawnHitchingPost()
+                spawnItem('hitchingpost', 'p_hitchingpost01x')
             elseif data.current.value == 'setcftravelpost' then
                 MenuData.CloseAll()
                 if Config.FastTravel.enabled then
@@ -103,8 +114,7 @@ function Tpmenu() --when triggered will open the main menu
     inmenu = true --changes var to true allowing the press of backspace to close the menu
     TriggerEvent('bcc-camp:MenuClose') --triggers the event
     MenuData.CloseAll() --closes all menus
-    local elements = {} --sets the var to a table
-    local elementindex = 1 --sets the var too 1
+    local elements, elementindex = {}, 1
     Citizen.Wait(100) --waits 100ms
     for k, v in pairs(Config.FastTravel.Locations) do --opens a for loop
         elements[elementindex] = { --sets the elemnents to this table
