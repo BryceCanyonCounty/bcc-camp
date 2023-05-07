@@ -21,7 +21,7 @@ client_scripts {
 }
 
 
-version '1.0.3'
+version '1.0.4'
 
 dependencies {
     'vorp_core',
