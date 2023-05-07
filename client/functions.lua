@@ -53,7 +53,7 @@ function progressbarfunc(time, text)
     FreezeEntityPosition(PlayerPedId(), true)
     RequestAnimDict("mini_games@story@beechers@build_floor@john")
     while not HasAnimDictLoaded("mini_games@story@beechers@build_floor@john") do
-        Citizen.Wait(100)
+        Wait(100)
     end
     TaskPlayAnim(PlayerPedId(), "mini_games@story@beechers@build_floor@john","hammer_loop_good", 8.0, 8.0, 100000000000000, 1, 0, true, 0, false, 0, false)
     progressbar.start(text, time, function() --sets up progress bar to run while anim is

@@ -10,7 +10,7 @@ end)
 local inmenu = false
 AddEventHandler('bcc-camp:MenuClose', function()
     while true do --loops will run permantely
-        Citizen.Wait(10) --waits 10ms prevents crashing
+        Wait(10) --waits 10ms prevents crashing
         if IsControlJustReleased(0, 0x156F7119) then --if backspace is pressed then
             if inmenu then --if var is true then
                 inmenu = false --resets var
@@ -48,7 +48,7 @@ function MainTentmenu() --when triggered will open the main menu
                             TriggerServerEvent('bcc-camp:RemoveCampItem')
                         end
                         cdown = true
-                        spawnTent()
+                        FurnMenu('tent')
                     else
                         VORPcore.NotifyRightTip(Config.Language.Cdown, 4000)
                     end
@@ -56,7 +56,7 @@ function MainTentmenu() --when triggered will open the main menu
                     if Config.CampItem.enabled then
                         TriggerServerEvent('bcc-camp:RemoveCampItem')
                     end
-                    spawnTent()
+                    FurnMenu('tent')
                 end
             end
         end)
@@ -89,16 +89,16 @@ function MainCampmenu() --when triggered will open the main menu
                 delcamp()
             elseif data.current.value == 'setcfire' then --if option clicked is this then
                 MenuData.CloseAll()
-                spawnItem('campfire', 'p_campfire01x')
+                FurnMenu('campfire')
             elseif data.current.value == 'setcbench' then
                 MenuData.CloseAll()
-                spawnItem('bench', 'p_bench_log03x')
+                FurnMenu('bench')
             elseif data.current.value == 'setcstoragechest' then
                 MenuData.CloseAll()
-                spawnStorageChest()
+                FurnMenu('storagechest')
             elseif data.current.value == 'setchitchingpost' then
                 MenuData.CloseAll()
-                spawnItem('hitchingpost', 'p_hitchingpost01x')
+                FurnMenu('hitchingpost')
             elseif data.current.value == 'setcftravelpost' then
                 MenuData.CloseAll()
                 if Config.FastTravel.enabled then
@@ -115,7 +115,7 @@ function Tpmenu() --when triggered will open the main menu
     TriggerEvent('bcc-camp:MenuClose') --triggers the event
     MenuData.CloseAll() --closes all menus
     local elements, elementindex = {}, 1
-    Citizen.Wait(100) --waits 100ms
+    Wait(100) --waits 100ms
     for k, v in pairs(Config.FastTravel.Locations) do --opens a for loop
         elements[elementindex] = { --sets the elemnents to this table
             label = v.name,
@@ -138,6 +138,94 @@ function Tpmenu() --when triggered will open the main menu
                 MenuData.CloseAll()
                 local coords = data.current.info
                 SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z)
+            end
+        end)
+end
+
+-- Furniture Menu Setup
+function FurnMenu(furntype)
+    local elements = {}
+    local elementindex = 1
+    local lastmen
+    if furntype == 'tent' then
+        for k, v in pairs(Config.Furniture.Tent) do
+            elements[elementindex] = {
+                label = v.hash,
+                value = 'settent' .. tostring(elementindex),
+                desc = Config.Language.SetTent_desc,
+                info = v.hash
+            }
+            elementindex = elementindex + 1
+        end
+    elseif furntype == 'bench' then
+        for k, v in pairs(Config.Furniture.Benchs) do
+            elements[elementindex] = {
+                label = v.hash,
+                value = 'settent' .. tostring(elementindex),
+                desc = Config.Language.SetBench_desc,
+                info = v.hash
+            }
+            elementindex = elementindex + 1
+        end
+    elseif furntype == 'hitchingpost' then
+        for k, v in pairs(Config.Furniture.HitchingPost) do
+            elements[elementindex] = {
+                label = v.hash,
+                value = 'settent' .. tostring(elementindex),
+                desc = Config.Language.SetHitchPost_desc,
+                info = v.hash
+            }
+            elementindex = elementindex + 1
+        end
+    elseif furntype == 'campfire' then
+        for k, v in pairs(Config.Furniture.Campfires) do
+            elements[elementindex] = {
+                label = v.hash,
+                value = 'settent' .. tostring(elementindex),
+                desc = Config.Language.SetFire_desc,
+                info = v.hash
+            }
+            elementindex = elementindex + 1
+        end
+    elseif furntype == 'storagechest' then
+        for k, v in pairs(Config.Furniture.StorageChest) do
+            elements[elementindex] = {
+                label = v.hash,
+                value = 'settent' .. tostring(elementindex),
+                desc = Config.Language.SetStorageChest_desc,
+                info = v.hash
+            }
+            elementindex = elementindex + 1
+        end
+    end
+    if furntype == 'tent' then
+        lastmen = 'MainTentmenu'
+    else
+        lastmen = 'MainCampmenu'
+    end
+    MenuData.Open('default', GetCurrentResourceName(), 'menuapi', {
+        title = Config.Language.FurnMenu,
+        align = 'top-left',
+        elements = elements,
+        lastmenu = lastmen
+    },
+        function(data)
+            if (data.current == "backup") then
+                _G[data.trigger]()
+            else
+                MenuData.CloseAll()
+                local model = data.current.info
+                if furntype == 'tent' then
+                    spawnTent(model)
+                elseif furntype == 'bench' then
+                    spawnItem('bench', model)
+                elseif furntype == 'hitchingpost' then
+                    spawnItem('hitchingpost', model)
+                elseif furntype == 'campfire' then
+                    spawnItem('campfire', model)
+                elseif furntype == 'storagechest' then
+                    spawnStorageChest(model)
+                end
             end
         end)
 end

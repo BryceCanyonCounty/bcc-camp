@@ -10,13 +10,12 @@ AddEventHandler('vorp:SelectedCharacter', function(charid)
 end)
 
 ---------------------- Prop Spawning -----------------------------------
-function spawnTent()
+function spawnTent(model)
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     if infrontofplayer or tentcreated then
         VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
     else
         progressbarfunc(Config.SetupTime.TentSetuptime, Config.Language.SettingTentPbar)
-        local model = 'p_ambtentscrub01b'
         local model2 = 'p_bedrollopen01x'
         modelload(model)
         modelload(model2)
@@ -32,7 +31,7 @@ function spawnTent()
             blip = VORPutils.Blips:SetBlip(Config.CampBlips.BlipName, Config.CampBlips.BlipHash, 0.2, x, y, z)
         end
         while DoesEntityExist(tent) do
-            Citizen.Wait(5)
+            Wait(5)
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
@@ -41,7 +40,7 @@ function spawnTent()
                     MainCampmenu() --opens the menu
                 end
             elseif dist > 200 then
-                Citizen.Wait(2000)
+                Wait(2000)
             end
         end
     end
@@ -87,21 +86,20 @@ function spawnItem(furntype, model)
 end
 
 
-function spawnStorageChest()
+function spawnStorageChest(model)
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     local notneartent = notneartentdistcheck(tent)
     if infrontofplayer or storagechestcreated or notneartent then
         VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
     else
         progressbarfunc(Config.SetupTime.StorageChestTime, Config.Language.StorageChestSetup)
-        local model = 'p_chest01x'
         modelload(model)
         local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 1.0, 0))
         storagechest = CreateObject(model, x, y, z, true, true, false)
         PropCorrection(storagechest)
         storagechestcreated = true
         while DoesEntityExist(storagechest) do
-            Citizen.Wait(10)
+            Wait(10)
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
@@ -110,7 +108,7 @@ function spawnStorageChest()
                     TriggerServerEvent('bcc-camp:OpenInv')
                 end
             elseif dist > 200 then
-                Citizen.Wait(2000)
+                Wait(2000)
             end
         end
     end
@@ -130,7 +128,7 @@ function spawnFastTravelPost()
         PropCorrection(fasttravelpost)
         fasttravelpostcreated = true
         while DoesEntityExist(fasttravelpost) do
-            Citizen.Wait(5)
+            Wait(5)
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
@@ -139,7 +137,7 @@ function spawnFastTravelPost()
                     Tpmenu()
                 end
             elseif dist > 200 then
-                Citizen.Wait(2000)
+                Wait(2000)
             end
         end
     end
@@ -187,7 +185,7 @@ end
 
 
 -- Command Setup
-Citizen.CreateThread(function()
+CreateThread(function()
     if Config.CampCommand then
         RegisterCommand(Config.CommandName, function()
             TriggerEvent('bcc-camp:NearTownCheck')
