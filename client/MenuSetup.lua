@@ -150,7 +150,7 @@ function FurnMenu(furntype)
     if furntype == 'tent' then
         for k, v in pairs(Config.Furniture.Tent) do
             elements[elementindex] = {
-                label = v.hash,
+                label = v.name,
                 value = 'settent' .. tostring(elementindex),
                 desc = Config.Language.SetTent_desc,
                 info = v.hash
@@ -160,7 +160,7 @@ function FurnMenu(furntype)
     elseif furntype == 'bench' then
         for k, v in pairs(Config.Furniture.Benchs) do
             elements[elementindex] = {
-                label = v.hash,
+                label = v.name,
                 value = 'settent' .. tostring(elementindex),
                 desc = Config.Language.SetBench_desc,
                 info = v.hash
@@ -170,7 +170,7 @@ function FurnMenu(furntype)
     elseif furntype == 'hitchingpost' then
         for k, v in pairs(Config.Furniture.HitchingPost) do
             elements[elementindex] = {
-                label = v.hash,
+                label = v.name,
                 value = 'settent' .. tostring(elementindex),
                 desc = Config.Language.SetHitchPost_desc,
                 info = v.hash
@@ -180,7 +180,7 @@ function FurnMenu(furntype)
     elseif furntype == 'campfire' then
         for k, v in pairs(Config.Furniture.Campfires) do
             elements[elementindex] = {
-                label = v.hash,
+                label = v.name,
                 value = 'settent' .. tostring(elementindex),
                 desc = Config.Language.SetFire_desc,
                 info = v.hash
@@ -190,7 +190,7 @@ function FurnMenu(furntype)
     elseif furntype == 'storagechest' then
         for k, v in pairs(Config.Furniture.StorageChest) do
             elements[elementindex] = {
-                label = v.hash,
+                label = v.name,
                 value = 'settent' .. tostring(elementindex),
                 desc = Config.Language.SetStorageChest_desc,
                 info = v.hash

@@ -72,6 +72,19 @@ function spawnItem(furntype, model)
                 PropCorrection(campfire)
                 campfirecreated = true
             end
+            while DoesEntityExist(campfire) do
+                Wait(5)
+                local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
+                local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
+                if dist < 2 then
+                    BccUtils.Misc.DrawText3D(x, y, z, Config.Language.RemoveFire)
+                    if IsControlJustReleased(0, 0x156F7119) then
+                        extinguishedCampfire()
+                    end
+                elseif dist > 200 then
+                    Wait(2000)
+                end
+            end
         elseif furntype == 'hitchingpost' then
             if hitchpostcreated then
                 VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
@@ -215,5 +228,21 @@ AddEventHandler('bcc-camp:NearTownCheck', function()
     end
     if outoftown then
         MainTentmenu()
+    end
+end)
+----------------------------------- Delete camp fire -----------------------
+function extinguishedCampfire()
+    if campfirecreated then
+        local objectCoords = GetEntityCoords(campfire)
+        progressbarfunc(Config.SetupTime.FireSetupTime, Config.Language.FireSetup)
+        DeleteObject(campfire)
+        campfirecreated = false
+    end
+end
+
+----------------------- Delete camp when resource stops -----------------------------------
+AddEventHandler("onResourceStop", function(resource)
+    if resource == GetCurrentResourceName() then
+        delcamp()
     end
 end)

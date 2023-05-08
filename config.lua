@@ -49,29 +49,43 @@ Config.Furniture = {
     Campfires = { --campfire hash
         {
             hash = 'p_campfire01x', --model of fire
+            name = 'Large Campfire', -- Name for Menu
+        },
+        {
+            hash = 'p_campfire05x',
+            name = 'Small Campfire',
         },
     },
     Benchs = {
         {
             hash = 'p_bench_log03x',
+            name = 'Log Bench',
+        },
+        {
+            hash = 'p_ambchair02x',
+            name = 'Small Camp Chair',
         },
     },
     HitchingPost = {
         {
             hash = 'p_hitchingpost01x',
+            name = 'Double Hitching Post',
         },
     },
     Tent = {
         {
             hash = 'p_ambtentscrub01b',
+            name = 'Small Tent',
         },
         {
             hash = 'p_ambtentgrass01x',
+            name = 'Medium Tent',
         },
     },
     StorageChest = {
         {
             hash = 'p_chest01x',
+            name = 'Storage Chest',
         },
     },
 }
@@ -117,6 +131,7 @@ Config.Language = {
     StorageChestSetup = 'Placing Storage Chest! ',
     HitchingPostSetup = 'Setting up the hitching post! ',
     FastTravelPostSetup = 'Settin up the fast travel post! ',
+    RemoveFire = 'Press "BACKSPACE" to Remove The Camp Fire',
 
     --Camp Setup Translations
     CantBuild = 'You can not build here!',
