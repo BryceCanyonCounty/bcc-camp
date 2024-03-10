@@ -28,11 +28,11 @@ function MainTentmenu() --when triggered will open the main menu
     TriggerEvent('bcc-camp:MenuClose') --triggers the event
     MenuData.CloseAll() --closes all menus
     local elements = { --sets the main 3 elements up
-        { label = Config.Language.SetTent, value = 'settent', desc = Config.Language.SetTent_desc }
+        { label = _U('SetTent'), value = 'settent', desc = _U('SetTent_desc') }
     }
     MenuData.Open('default', GetCurrentResourceName(), 'menuapi', --opens the menu
         {
-            title = Config.Language.MenuName, --sets the title
+            title = _U('MenuName'), --sets the title
             align = 'top-left', --aligns it too left side of screen
             elements = elements, --sets the elemnts
         },
@@ -50,7 +50,7 @@ function MainTentmenu() --when triggered will open the main menu
                         cdown = true
                         FurnMenu('tent')
                     else
-                        VORPcore.NotifyRightTip(Config.Language.Cdown, 4000)
+                        VORPcore.NotifyRightTip(_U('Cdown'), 4000)
                     end
                 else
                     if Config.CampItem.enabled then
@@ -67,16 +67,16 @@ function MainCampmenu() --when triggered will open the main menu
     TriggerEvent('bcc-camp:MenuClose') --triggers the event
     MenuData.CloseAll() --closes all menus
     local elements = { --sets the main 3 elements up
-        { label = Config.Language.DestroyCamp, value = 'destroycamp', desc = Config.Language.DestroyCamp_desc },
-        { label = Config.Language.SetFire, value = 'setcfire', desc = Config.Language.SetFire_desc },
-        { label = Config.Language.SetBench, value = 'setcbench', desc = Config.Language.SetBench_desc },
-        { label = Config.Language.SetStorageChest, value = 'setcstoragechest', desc = Config.Language.SetStorageChest_desc },
-        { label = Config.Language.SetHitchPost, value = 'setchitchingpost', desc = Config.Language.SetHitchPost_desc },
-        { label = Config.Language.SetupFTravelPost, value = 'setcftravelpost', desc = Config.Language.SetupFTravelPost_desc },
+        { label = _U('DestroyCamp'), value = 'destroycamp', desc = _U('DestroyCamp_desc') },
+        { label = _U('SetFire'), value = 'setcfire', desc = _U('SetFire_desc') },
+        { label = _U('SetBench'), value = 'setcbench', desc = _U('SetBench_desc') },
+        { label = _U('SetStorageChest'), value = 'setcstoragechest', desc = _U('SetStorageChest_desc') },
+        { label = _U('SetHitchPost'), value = 'setchitchingpost', desc = _U('SetHitchPost_desc') },
+        { label = _U('SetupFTravelPost'), value = 'setcftravelpost', desc = _U('SetupFTravelPost_desc') },
     }
     MenuData.Open('default', GetCurrentResourceName(), 'menuapi', --opens the menu
         {
-            title = Config.Language.MenuName, --sets the title
+            title = _U('MenuName'), --sets the title
             align = 'top-left', --aligns it too left side of screen
             elements = elements, --sets the elemnts
         },
@@ -104,7 +104,7 @@ function MainCampmenu() --when triggered will open the main menu
                 if Config.FastTravel.enabled then
                     spawnFastTravelPost()
                 else
-                    VORPcore.NotifyRightTip(Config.Language.FTravelDisabled, 4000)
+                    VORPcore.NotifyRightTip(_U('FTravelDisabled'), 4000)
                 end
             end
         end)
@@ -120,13 +120,13 @@ function Tpmenu() --when triggered will open the main menu
         elements[elementindex] = { --sets the elemnents to this table
             label = v.name,
             value = 'tp' .. tostring(elementindex), --sets the value
-            desc = Config.Language.TpDesc .. v.name, --empty desc
+            desc = _U('TpDesc') .. v.name, --empty desc
             info = v.coords
         }
         elementindex = elementindex + 1 --adds 1 to the var
     end
     MenuData.Open('default', GetCurrentResourceName(), 'menuapi', {
-        title = Config.Language.FastTravelMenuName,
+        title = _U('FastTravelMenuName'),
         align = 'top-left',
         elements = elements,
         lastmenu = "MainMenu"
@@ -152,7 +152,7 @@ function FurnMenu(furntype)
             elements[elementindex] = {
                 label = v.name,
                 value = 'settent' .. tostring(elementindex),
-                desc = Config.Language.SetTent_desc,
+                desc = _U('SetTent_desc'),
                 info = v.hash
             }
             elementindex = elementindex + 1
@@ -162,7 +162,7 @@ function FurnMenu(furntype)
             elements[elementindex] = {
                 label = v.name,
                 value = 'settent' .. tostring(elementindex),
-                desc = Config.Language.SetBench_desc,
+                desc = _U('SetBench_desc'),
                 info = v.hash
             }
             elementindex = elementindex + 1
@@ -172,7 +172,7 @@ function FurnMenu(furntype)
             elements[elementindex] = {
                 label = v.name,
                 value = 'settent' .. tostring(elementindex),
-                desc = Config.Language.SetHitchPost_desc,
+                desc = _U('SetHitchPost_desc'),
                 info = v.hash
             }
             elementindex = elementindex + 1
@@ -182,7 +182,7 @@ function FurnMenu(furntype)
             elements[elementindex] = {
                 label = v.name,
                 value = 'settent' .. tostring(elementindex),
-                desc = Config.Language.SetFire_desc,
+                desc = _U('SetFire_desc'),
                 info = v.hash
             }
             elementindex = elementindex + 1
@@ -192,7 +192,7 @@ function FurnMenu(furntype)
             elements[elementindex] = {
                 label = v.name,
                 value = 'settent' .. tostring(elementindex),
-                desc = Config.Language.SetStorageChest_desc,
+                desc = _U('SetStorageChest_desc'),
                 info = v.hash
             }
             elementindex = elementindex + 1
@@ -204,7 +204,7 @@ function FurnMenu(furntype)
         lastmen = 'MainCampmenu'
     end
     MenuData.Open('default', GetCurrentResourceName(), 'menuapi', {
-        title = Config.Language.FurnMenu,
+        title = _U('FurnMenu'),
         align = 'top-left',
         elements = elements,
         lastmenu = lastmen

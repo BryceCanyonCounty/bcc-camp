@@ -13,9 +13,10 @@ end)
 function spawnTent(model)
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     if infrontofplayer or tentcreated then
-        VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+        _U('anchorUp')
+        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
     else
-        progressbarfunc(Config.SetupTime.TentSetuptime, Config.Language.SettingTentPbar)
+        progressbarfunc(Config.SetupTime.TentSetuptime, _U('SettingTentPbar'))
         local model2 = 'p_bedrollopen01x'
         modelload(model)
         modelload(model2)
@@ -28,14 +29,14 @@ function spawnTent(model)
         PropCorrection(broll)
         SetEntityHeading(broll, GetEntityHeading(broll) + 90) --this sets the beroll properly headed
         if Config.CampBlips.enable then
-            blip = VORPutils.Blips:SetBlip(Config.CampBlips.BlipName, Config.CampBlips.BlipHash, 0.2, x, y, z)
+            blip = BccUtils.Blips:SetBlip(Config.CampBlips.BlipName, Config.CampBlips.BlipHash, 0.2, x, y, z)
         end
         while DoesEntityExist(tent) do
             Wait(5)
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
-                BccUtils.Misc.DrawText3D(x, y, z, Config.Language.OpenCampMenu)
+                BccUtils.Misc.DrawText3D(x, y, z, _U('OpenCampMenu'))
                 if IsControlJustReleased(0, 0x760A9C6F) then
                     MainCampmenu() --opens the menu
                 end
@@ -51,23 +52,23 @@ function spawnItem(furntype, model)
     local notneartent = notneartentdistcheck(tent)
     local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 1.0, 0))
     if infrontofplayer or notneartent then
-        VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
     else
         modelload(model)
         if furntype == 'bench' then
             if benchcreated then
-                VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+                VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
             else
-                progressbarfunc(Config.SetupTime.BenchSetupTime, Config.Language.SettingBucnhPbar)
+                progressbarfunc(Config.SetupTime.BenchSetupTime, _U('SettingBucnhPbar'))
                 bench = CreateObject(model, x, y, z, true, true, false)
                 benchcreated = true
                 PropCorrection(bench)
             end
         elseif furntype == 'campfire' then
             if campfirecreated then
-                VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+                VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
             else
-                progressbarfunc(Config.SetupTime.FireSetupTime, Config.Language.FireSetup)
+                progressbarfunc(Config.SetupTime.FireSetupTime, _U('FireSetup'))
                 campfire = CreateObject(model, x, y, z, true, true, false)
                 PropCorrection(campfire)
                 campfirecreated = true
@@ -77,7 +78,7 @@ function spawnItem(furntype, model)
                 local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
                 local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
                 if dist < 2 then
-                    BccUtils.Misc.DrawText3D(x, y, z, Config.Language.RemoveFire)
+                    BccUtils.Misc.DrawText3D(x, y, z, _U('RemoveFire'))
                     if IsControlJustReleased(0, 0x156F7119) then
                         extinguishedCampfire()
                     end
@@ -87,9 +88,9 @@ function spawnItem(furntype, model)
             end
         elseif furntype == 'hitchingpost' then
             if hitchpostcreated then
-                VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+                VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
             else
-                progressbarfunc(Config.SetupTime.HitchingPostTime, Config.Language.HitchingPostSetup)
+                progressbarfunc(Config.SetupTime.HitchingPostTime, _('HitchingPostSetup'))
                 hitchpost = CreateObject(model, x, y, z, true, true, false)
                 PropCorrection(hitchpost)
                 hitchpostcreated = true
@@ -103,9 +104,9 @@ function spawnStorageChest(model)
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     local notneartent = notneartentdistcheck(tent)
     if infrontofplayer or storagechestcreated or notneartent then
-        VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
     else
-        progressbarfunc(Config.SetupTime.StorageChestTime, Config.Language.StorageChestSetup)
+        progressbarfunc(Config.SetupTime.StorageChestTime, _U('StorageChestSetup'))
         modelload(model)
         local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 1.0, 0))
         storagechest = CreateObject(model, x, y, z, true, true, false)
@@ -116,7 +117,7 @@ function spawnStorageChest(model)
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
-                BccUtils.Misc.DrawText3D(x, y, z - 1, Config.Language.OpenCampStorage)
+                BccUtils.Misc.DrawText3D(x, y, z - 1, _U('OpenCampStorage'))
                 if IsControlJustReleased(0, 0x760A9C6F) then
                     TriggerServerEvent('bcc-camp:OpenInv')
                 end
@@ -131,9 +132,9 @@ function spawnFastTravelPost()
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     local notneartent = notneartentdistcheck(tent)
     if infrontofplayer or fasttravelpostcreated or notneartent then
-        VORPcore.NotifyRightTip(Config.Language.CantBuild, 4000)
+        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
     else
-        progressbarfunc(Config.SetupTime.FastTravelPostTime, Config.Language.FastTravelPostSetup)
+        progressbarfunc(Config.SetupTime.FastTravelPostTime, _U('FastTravelPostSetup'))
         local model = 'mp001_s_fasttravelmarker01x'
         modelload(model)
         local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 1.0, 0))
@@ -145,7 +146,7 @@ function spawnFastTravelPost()
             local x2,y2,z2 = table.unpack(GetEntityCoords(PlayerPedId()))
             local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
             if dist < 2 then
-                BccUtils.Misc.DrawText3D(x, y, z, Config.Language.OpenFastTravel)
+                BccUtils.Misc.DrawText3D(x, y, z, _U('OpenFastTravel'))
                 if IsControlJustReleased(0, 0x760A9C6F) then
                     Tpmenu()
                 end
@@ -168,7 +169,7 @@ end)
 function delcamp()
     if tentcreated then
         if Config.CampBlips then
-            VORPutils.Blips:RemoveBlip(blip.rawblip)
+            BccUtils.Blip:RemoveBlip(blip.rawblip)
         end
         tentcreated = false
         DeleteObject(tent)
@@ -221,7 +222,7 @@ AddEventHandler('bcc-camp:NearTownCheck', function()
             if GetDistanceBetweenCoords(pl.x, pl.y, pl.z, e.coordinates.x, e.coordinates.y, e.coordinates.z, false) > e.range then
                 outoftown = true
             else
-                VORPcore.NotifyRightTip(Config.Language.Tooclosetotown, 4000)
+                VORPcore.NotifyRightTip(_U('Tooclosetotown'), 4000)
                 outoftown = false break
             end
         end
@@ -234,7 +235,7 @@ end)
 function extinguishedCampfire()
     if campfirecreated then
         local objectCoords = GetEntityCoords(campfire)
-        progressbarfunc(Config.SetupTime.FireSetupTime, Config.Language.FireSetup)
+        progressbarfunc(Config.SetupTime.FireSetupTime, _U('FireSetup'))
         DeleteObject(campfire)
         campfirecreated = false
     end

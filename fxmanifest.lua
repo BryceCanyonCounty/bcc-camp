@@ -5,21 +5,23 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 lua54 'yes'
 author 'Jake2k4'
 
-server_scripts {
-    'server.lua',
-}
-
 shared_scripts {
     'config.lua',
+    'locale.lua',
+	'languages/*.lua',
 }
-
 
 client_scripts {
-    '/client/functions.lua',
-    '/client/MenuSetup.lua',
-    '/client/CampSetup.lua',
+    'config.lua',
+    'client/functions.lua',
+    'client/MenuSetup.lua',
+    'client/CampSetup.lua',
 }
 
+server_scripts {
+    'config.lua',
+    'server/server.lua',
+}
 
 version '1.0.4'
 
