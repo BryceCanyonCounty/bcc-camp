@@ -13,7 +13,6 @@ end)
 function spawnTent(model)
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     if infrontofplayer or tentcreated then
-        _U('anchorUp')
         VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
     else
         progressbarfunc(Config.SetupTime.TentSetuptime, _U('SettingTentPbar'))
