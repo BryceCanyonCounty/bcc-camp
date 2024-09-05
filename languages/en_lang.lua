@@ -28,10 +28,23 @@ Locales["en_lang"] = {
     HitchingPostSetup = 'Setting up the hitching post! ',
     FastTravelPostSetup = 'Settin up the fast travel post! ',
     RemoveFire = 'Press "BACKSPACE" to Remove The Camp Fire',
+
     --Camp Setup Translations
     CantBuild = 'You can not build here!',
     InventoryName = 'Camp Storage ',
     Tooclosetotown = 'You are to close to a town',
     Cdown = 'On Cooldown',
-    FurnMenu = 'Furniture Menu'
+    FurnMenu = 'Furniture Menu',
+    MoveAroundToPlace = "Move around to place",
+    MoveAndPlace = "Move around and place",
+    cannotBuildNear = "Cannot build near tent",
+    camp = "Camp",
+    manageCamp = "Manage Camp",
+    place = "Place",
+    itemPlacement = "Item Placement",
+    placeTravelPost = "Place Fast Travel Post",
+    fastTravelPlace = "Fast Travel Post Placement",
+    extinguishCampfire = "Extinguish the campfire",
+    chestPlacement = "Storage Chest Placement",
+    placeChest = "Place Storage Chest"
 }

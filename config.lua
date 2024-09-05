@@ -10,12 +10,12 @@ Config.CampBlips = {
     BlipName = 'Camp', --blips name
     BlipHash = 'blip_teamsters' --blips blip hash
 }
-
+Config.DevMode = false
 Config.CampRadius = 30 --radius you will be able to place props inside
 Config.CampCommand = true --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
 Config.CampItem = { 
 	enabled = false, 
-	CampItem = 'water', 
+	CampItem = 'tent', 
 	RemoveItem = true
 } --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 

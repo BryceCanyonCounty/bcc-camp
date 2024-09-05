@@ -1,16 +1,47 @@
 ----------------------------- Essentials ------------------------------
-VORPcore = {}
-TriggerEvent("getCore", function(core)
-    VORPcore = core
-end)
-VORPutils = {}
-TriggerEvent("getUtils", function(utils)
-    VORPutils = utils
-end)
-progressbar = exports.vorp_progressbar:initiate()
+VORPcore = exports.vorp_core:GetCore()
+FeatherMenu = exports["feather-menu"].initiate()
+MiniGame = exports["bcc-minigames"].initiate()
+progressbar = exports["feather-progressbar"]:initiate()
 BccUtils = exports['bcc-utils'].initiate()
 
+BCCcampMenu = FeatherMenu:RegisterMenu("bcc:camp:mainmenu",
+    {
+        top = "5%",
+        left = "5%",
+        ["720width"] = "500px",
+        ["1080width"] = "600px",
+        ["2kwidth"] = "700px",
+        ["4kwidth"] = "900px",
+        style = {},
+        contentslot = {
+            style = {
+                ["height"] = "450px",
+                ["min-height"] = "250px"
+            }
+        },
+        draggable = true
+    },
+    {
+        opened = function()
+            DisplayRadar(false)
+        end,
+        closed = function()
+            DisplayRadar(true)
+        end
+    }
+)
 ---------------------------- Functions ------------------------------------------------
+if Config.DevMode then
+    -- Helper function for debugging
+    function devPrint(message)
+        print("^1[DEV MODE] ^4" .. message)
+    end
+else
+    -- Define devPrint as a no-op function if DevMode is not enabled
+    function devPrint(message)
+    end
+end
 
 --Function to load model
 function modelload(model) --model = variable with the models text hash

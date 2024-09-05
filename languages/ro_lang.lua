@@ -28,10 +28,23 @@ Locales["ro_lang"] = {
     HitchingPostSetup = 'Configurarea postului de legare!',
     FastTravelPostSetup = 'Configurarea postului de calatorie rapida!',
     RemoveFire = 'Apasati "BACKSPACE" pentru a Elimina Focul de Tabara',
+    
     -- Traduceri Configurare Tabara
     CantBuild = 'Nu poti construi aici!',
     InventoryName = 'Depozitul Taberei',
     Tooclosetotown = 'Esti prea aproape de un oras',
     Cdown = 'In asteptare',
     FurnMenu = 'Meniu Mobilier',
+    MoveAroundToPlace = "Misca-te pentru a plasa",
+    MoveAndPlace = "Misca-te si plaseaza",
+    cannotBuildNear = "Nu poti construi aproape de cort",
+    camp = "Tabara",
+    manageCamp = "Gestioneaza Tabara",
+    place = "Plaseaza",
+    itemPlacement = "Plasarea Obiectului",
+    placeTravelPost = "Plaseaza Post de Calatorie Rapida",
+    fastTravelPlace = "Plasarea Postului de Calatorie Rapida",
+    extinguishCampfire = "Stinge focul de tabara",
+    chestPlacement = "Plasarea Cufarului de Depozitare",
+    placeChest = "Plaseaza Cufar de Depozitare"
 }

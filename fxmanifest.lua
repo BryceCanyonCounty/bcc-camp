@@ -12,23 +12,22 @@ shared_scripts {
 }
 
 client_scripts {
-    'config.lua',
     'client/functions.lua',
     'client/MenuSetup.lua',
     'client/CampSetup.lua',
 }
 
 server_scripts {
-    'config.lua',
     'server/server.lua',
 }
 
-version '1.0.5'
+version '1.0.6'
 
 dependencies {
     'vorp_core',
     'vorp_inventory',
-    'vorp_utils',
-    'bcc-utils',
     'vorp_character',
+    'feather-menu',
+    'feather-progressbar',
+    'bcc-utils'
 }
