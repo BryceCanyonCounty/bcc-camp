@@ -80,4 +80,4 @@ end)
 
 -- Version check
 devPrint("Checking version for resource: " .. GetCurrentResourceName())
-BccUtils.Versioner.checkFile(GetCurrentResourceName(), 'https://github.com/BryceCanyonCounty/bcc-stables')
+BccUtils.Versioner.checkFile(GetCurrentResourceName(), 'https://github.com/BryceCanyonCounty/bcc-camp')
