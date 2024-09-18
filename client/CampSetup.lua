@@ -63,7 +63,8 @@ function spawnTentAndFurniture(tentModel, furnitureModels, campCoords)
     spawnedFurniture = {}
 
     -- Reset furniture existence flags
-    campfireExists, benchExists, storagechestExists, hitchingpostExists, fasttravelExists = false, false, false, false, false
+    campfireExists, benchExists, storagechestExists, hitchingpostExists, fasttravelExists = false, false, false, false,
+        false
 
     -- Loop through and spawn all the furniture models from the database
     for i, furniture in ipairs(furnitureModels) do
@@ -235,7 +236,7 @@ function spawnTent(model)
 
         -- Save the tent data to the database
         local tentCoords = { x = x, y = y, z = z }
-        TriggerServerEvent('bcc-camp:saveCampData', tentCoords, nil, model)  -- Pass tent_model here
+        TriggerServerEvent('bcc-camp:saveCampData', tentCoords, nil, model) -- Pass tent_model here
 
         if Config.CampBlips.enable then
             blip = BccUtils.Blips:SetBlip(Config.CampBlips.BlipName, Config.CampBlips.BlipHash, 0.2, x, y, z)
@@ -340,15 +341,38 @@ function spawnItem(furntype, model)
                             benchcreated = true
                             devPrint("Bench created at coordinates: " ..
                             newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)
+
+                            -- Save bench to the database
+                            local furnitureCoords = {
+                                type = 'bench',
+                                model = model,
+                                x = newObjectPos.x,
+                                y = newObjectPos.y,
+                                z = newObjectPos.z
+                            }
+                            TriggerServerEvent('bcc-camp:InsertFurnitureIntoCampDB', furnitureCoords)
                         end
                     elseif furntype == 'campfire' then
                         if campfirecreated then
                             VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
                         else
                             progressbarfunc(Config.SetupTime.FireSetupTime, _U('FireSetup'))
-                            campfire = CreateObject(model, x, y, z, true, true, false)
+                            campfire = CreateObject(model, newObjectPos.x, newObjectPos.y, newObjectPos.z, true, true,
+                                false)
                             PropCorrection(campfire)
                             campfirecreated = true
+                            devPrint("Campfire created at coordinates: " ..
+                            newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)
+
+                            -- Save campfire to the database
+                            local furnitureCoords = {
+                                type = 'campfire',
+                                model = model,
+                                x = newObjectPos.x,
+                                y = newObjectPos.y,
+                                z = newObjectPos.z
+                            }
+                            TriggerServerEvent('bcc-camp:InsertFurnitureIntoCampDB', furnitureCoords)
                         end
 
                         -- Handle campfire interaction (removal)
@@ -373,15 +397,22 @@ function spawnItem(furntype, model)
                             VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
                         else
                             progressbarfunc(Config.SetupTime.HitchingPostTime, _('HitchingPostSetup'))
-                            hitchpost = CreateObject(model, x, y, z, true, true, false)
+                            hitchpost = CreateObject(model, newObjectPos.x, newObjectPos.y, newObjectPos.z, true, true, false)
                             PropCorrection(hitchpost)
                             hitchpostcreated = true
-                            devPrint("Hitching post created at coordinates: " .. x .. ", " .. y .. ", " .. z) -- Dev print
+                            devPrint("Hitching post created at coordinates: " .. newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)
+
+                            -- Save hitching post to the database
+                            local furnitureCoords = {
+                                type = 'hitchingpost',
+                                model = model,
+                                x = newObjectPos.x,
+                                y = newObjectPos.y,
+                                z = newObjectPos.z
+                            }
+                            TriggerServerEvent('bcc-camp:InsertFurnitureIntoCampDB', furnitureCoords)
                         end
                     end
-
-                    -- Send the furniture data to the server to save it to the database
-                    TriggerServerEvent('bcc-camp:InsertFurnitureIntoCampDB', furnitureCoords)
                 end
             end
         end
@@ -391,8 +422,7 @@ end
 function spawnStorageChest(model)
     devPrint("spawnStorageChest called with model: " .. tostring(model)) -- Dev print
     local PromptGroupStorage = BccUtils.Prompts:SetupPromptGroup()
-    local PlaceStorageChestPrompt = PromptGroupStorage:RegisterPrompt(_U('placeChest'), BccUtils.Keys["G"], 1, 1, true,
-        'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
+    local PlaceStorageChestPrompt = PromptGroupStorage:RegisterPrompt(_U('placeChest'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
 
     local placing = true
     VORPcore.NotifyRightTip(_U('MoveAndPlace'), 5000)
@@ -432,8 +462,7 @@ function spawnStorageChest(model)
             end
 
             -- Update the preview object's position and rotation
-            SetEntityCoordsNoOffset(storagechest_preview, newObjectPos.x, newObjectPos.y, newObjectPos.z, false, false,
-                false)
+            SetEntityCoordsNoOffset(storagechest_preview, newObjectPos.x, newObjectPos.y, newObjectPos.z, false, false, false)
             SetEntityHeading(storagechest_preview, playerHeading)
 
             -- Show prompt to confirm placement
@@ -465,8 +494,7 @@ function spawnStorageChest(model)
                         y = newObjectPos.y,
                         z = newObjectPos.z
                     })
-                    devPrint("Storage chest created at coordinates: " ..
-                    newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)                                                      -- Dev print
+                    devPrint("Storage chest created at coordinates: " .. newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)                                                      -- Dev print
 
                     -- Interaction loop for the storage chest
                     Citizen.CreateThread(function()
@@ -496,7 +524,7 @@ end
 function spawnFastTravelPost()
     devPrint("spawnFastTravelPost called") -- Dev print
     local PromptGroupTravel = BccUtils.Prompts:SetupPromptGroup()
-    local PlaceFastTravelPrompt = PromptGroupTravel:RegisterPrompt(_U('placeTravelPost'), BccUtils.Keys["G"], 1, 1, true,'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
+    local PlaceFastTravelPrompt = PromptGroupTravel:RegisterPrompt(_U('placeTravelPost'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
     local PromptFastTravel = BccUtils.Prompts:SetupPromptGroup()
     local OpenFastTravel = PromptFastTravel:RegisterPrompt(_U('OpenFastTravel'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
     local placing = true
@@ -572,11 +600,11 @@ function spawnFastTravelPost()
                     })
 
                     -- Make the final object solid and visible
-                    SetEntityCollision(fasttravelpost, true, true)                                                                              -- Enable collision
-                    ResetEntityAlpha(fasttravelpost)                                                                                            -- Make fully visible
+                    SetEntityCollision(fasttravelpost, true, true) -- Enable collision
+                    ResetEntityAlpha(fasttravelpost)               -- Make fully visible
 
                     devPrint("Fast travel post created at coordinates: " ..
-                    newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)                                                         -- Dev print
+                        newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z) -- Dev print
 
                     -- Interaction loop for the fast travel post
                     Citizen.CreateThread(function()
