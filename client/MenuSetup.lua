@@ -55,6 +55,7 @@ end
 function MainCampmenu()
     local mainCampMenu = BCCcampMenu:RegisterPage('maincamp:page')
 
+    -- Header for the main camp menu
     mainCampMenu:RegisterElement('header', {
         value = _U('MenuName'),
         slot = "header",
@@ -76,44 +77,14 @@ function MainCampmenu()
         delcamp()
     end)
 
-    -- Button for Set Fire
+    -- Button for Furniture Setup
     mainCampMenu:RegisterElement('button', {
-        label = _U('SetFire'),
+        label = "Furniture",
         slot = "content",
         style = {},
     }, function()
         BCCcampMenu:Close()
-        FurnMenu('campfire')
-    end)
-
-    -- Button for Set Bench
-    mainCampMenu:RegisterElement('button', {
-        label = _U('SetBench'),
-        slot = "content",
-        style = {},
-    }, function()
-        BCCcampMenu:Close()
-        FurnMenu('bench')
-    end)
-
-    -- Button for Set Storage Chest
-    mainCampMenu:RegisterElement('button', {
-        label = _U('SetStorageChest'),
-        slot = "content",
-        style = {},
-    }, function()
-        BCCcampMenu:Close()
-        FurnMenu('storagechest')
-    end)
-
-    -- Button for Set Hitch Post
-    mainCampMenu:RegisterElement('button', {
-        label = _U('SetHitchPost'),
-        slot = "content",
-        style = {},
-    }, function()
-        BCCcampMenu:Close()
-        FurnMenu('hitchingpost')
+        FurnitureSetupMenu()
     end)
 
     -- Button for Setup Fast Travel Post
@@ -130,6 +101,20 @@ function MainCampmenu()
         end
     end)
 
+    mainCampMenu:RegisterElement('line', {
+        slot = "footer",
+        style = {}
+    })
+
+    -- Back Button to return to the Main Camp Menu
+    mainCampMenu:RegisterElement('button', {
+        label = _U("closeButton"),
+        slot = 'footer',
+        style = {}
+    }, function()
+        BCCcampMenu:Close()
+    end)
+
     mainCampMenu:RegisterElement('bottomline', {
         slot = "footer",
         style = {}
@@ -137,16 +122,12 @@ function MainCampmenu()
 
     local descrText = {
         _U('DestroyCamp_desc'),
-        _U('SetFire_desc'),
-        _U('SetBench_desc'),
-        _U('SetStorageChest_desc'),
-        _U('SetHitchPost_desc'),
         _U('SetupFTravelPost_desc')
     }
-    
+
     -- Combine all values into a single sentence, separated by commas
     local combinedDescr = table.concat(descrText, ", ")
-    
+
     -- Use HTML to create a styled text display
     mainCampMenu:RegisterElement("html", {
         value = {
@@ -160,8 +141,129 @@ function MainCampmenu()
         style = {}
     })
 
+    -- Open the main camp menu
     BCCcampMenu:Open({
         startupPage = mainCampMenu
+    })
+end
+
+function FurnitureSetupMenu()
+    local furnitureMenu = BCCcampMenu:RegisterPage('furniture:page')
+
+    -- Header for the furniture setup menu
+    furnitureMenu:RegisterElement('header', {
+        value = _U('furnitureMenu'),
+        slot = "header",
+        style = {}
+    })
+
+    furnitureMenu:RegisterElement('line', {
+        slot = "header",
+        style = {}
+    })
+
+    -- Button for Campfire
+    if campfireExists then
+        furnitureMenu:RegisterElement('button', {
+            label = _U('RemoveFire'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            extinguishedCampfire()
+        end)
+    else
+        furnitureMenu:RegisterElement('button', {
+            label = _U('SetFire'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            FurnMenu('campfire')
+        end)
+    end
+
+    -- Button for Bench
+    if benchExists then
+        furnitureMenu:RegisterElement('button', {
+            label = _U('RemoveBench'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            deleteBench() -- You need to implement the logic to remove the bench
+        end)
+    else
+        furnitureMenu:RegisterElement('button', {
+            label = _U('SetBench'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            FurnMenu('bench')
+        end)
+    end
+
+    -- Button for Storage Chest
+    if storagechestExists then
+        furnitureMenu:RegisterElement('button', {
+            label = _U('RemoveStorageChest'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            deleteStorageChest() -- Implement the removal of the storage chest
+        end)
+    else
+        furnitureMenu:RegisterElement('button', {
+            label = _U('SetStorageChest'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            FurnMenu('storagechest')
+        end)
+    end
+
+    -- Button for Hitching Post
+    if hitchingpostExists then
+        furnitureMenu:RegisterElement('button', {
+            label = _U('RemoveHitchPost'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            deleteHitchPost() -- Implement the removal of the hitching post
+        end)
+    else
+        furnitureMenu:RegisterElement('button', {
+            label = _U('SetHitchPost'),
+            slot = "content",
+            style = {},
+        }, function()
+            BCCcampMenu:Close()
+            FurnMenu('hitchingpost')
+        end)
+    end
+
+    -- Footer Line
+    furnitureMenu:RegisterElement('line', {
+        slot = "footer",
+        style = {}
+    })
+
+    -- Back Button to return to the Main Camp Menu
+    furnitureMenu:RegisterElement('button', {
+        label = _U("backButton"),
+        slot = 'footer',
+        style = {}
+    }, function()
+        MainCampmenu()
+    end)
+
+    -- Open the furniture setup menu
+    BCCcampMenu:Open({
+        startupPage = furnitureMenu
     })
 end
 
@@ -241,7 +343,7 @@ function FurnMenu(furntype)
             end)
         end
 
-    -- For benches
+        -- For benches
     elseif furntype == 'bench' then
         for _, v in pairs(Config.Furniture.Benchs) do
             FurnMenuPage:RegisterElement('button', {
@@ -254,7 +356,7 @@ function FurnMenu(furntype)
             end)
         end
 
-    -- For hitching posts
+        -- For hitching posts
     elseif furntype == 'hitchingpost' then
         for _, v in pairs(Config.Furniture.HitchingPost) do
             FurnMenuPage:RegisterElement('button', {
@@ -267,7 +369,7 @@ function FurnMenu(furntype)
             end)
         end
 
-    -- For campfires
+        -- For campfires
     elseif furntype == 'campfire' then
         for _, v in pairs(Config.Furniture.Campfires) do
             FurnMenuPage:RegisterElement('button', {
@@ -280,7 +382,7 @@ function FurnMenu(furntype)
             end)
         end
 
-    -- For storage chests
+        -- For storage chests
     elseif furntype == 'storagechest' then
         for _, v in pairs(Config.Furniture.StorageChest) do
             FurnMenuPage:RegisterElement('button', {

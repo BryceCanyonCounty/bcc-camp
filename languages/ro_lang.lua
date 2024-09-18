@@ -3,9 +3,9 @@ Locales["ro_lang"] = {
     MenuName = 'Meniu Tabara',
     SetTent = 'Instaleaza Tabara',
     SetTent_desc = 'Impingeti tabara dvs.',
-    OpenCampMenu = 'Apasati "G" pentru a Deschide Meniul Taberei',
-    OpenCampStorage = 'Apasati "G" pentru a Deschide Depozitul Taberei',
-    OpenFastTravel = 'Apasati G pentru a Deschide Meniul de Calatorie Rapida',
+    OpenCampMenu = 'Deschide Meniul Taberei',
+    OpenCampStorage = 'Deschide Depozitul Taberei',
+    OpenFastTravel = 'Deschide Meniul de Calatorie Rapida',
     SetFire = 'Instaleaza Foc',
     SetFire_desc = 'Incepeti un Foc de Tabara',
     SetBench = 'Instaleaza o Banca',
@@ -27,7 +27,7 @@ Locales["ro_lang"] = {
     StorageChestSetup = 'Plasarea Cufarului de Depozitare!',
     HitchingPostSetup = 'Configurarea postului de legare!',
     FastTravelPostSetup = 'Configurarea postului de calatorie rapida!',
-    RemoveFire = 'Apasati "BACKSPACE" pentru a Elimina Focul de Tabara',
+    RemoveFire = 'Elimina Focul de Tabara',
     
     -- Traduceri Configurare Tabara
     CantBuild = 'Nu poti construi aici!',
@@ -46,5 +46,12 @@ Locales["ro_lang"] = {
     fastTravelPlace = "Plasarea Postului de Calatorie Rapida",
     extinguishCampfire = "Stinge focul de tabara",
     chestPlacement = "Plasarea Cufarului de Depozitare",
-    placeChest = "Plaseaza Cufar de Depozitare"
+    placeChest = "Plaseaza Cufar de Depozitare",
+
+    backButton = 'Inapoi',
+    closeButton = 'Inchide',
+    furnitureMenu = 'Meniu Mobilier',
+    RemoveStorageChest = 'Sterge cufar',
+    RemoveBench = 'Sterge banca',
+    RemoveHitchPost = 'Sterge Post de legare'
 }

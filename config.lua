@@ -1,145 +1,156 @@
-Config = {}
+Config = {
+    -- Set Language
+    defaultlang = 'en_lang',
+    ---------------------------- Camp Configuration ------------------------------------------
 
--- Set Language
-Config.defaultlang = 'en_lang'
----------------------------- Camp Configuration ------------------------------------------
+    --Blip Setup
+    CampBlips = {
+        enable = true,          --if true thier will be a blip on the camp
+        BlipName = 'Camp',      --blips name
+        BlipHash = 'blip_teamsters' --blips blip hash
+    },
+    DevMode = true,
+    CampRadius = 30, --radius you will be able to place props inside
+    CampCommand = true, --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
+    CampItem = {
+        enabled = false,
+        CampItem = 'tent',
+        RemoveItem = true
+    }, --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 
---Blip Setup
-Config.CampBlips = {
-    enable = true, --if true thier will be a blip on the camp
-    BlipName = 'Camp', --blips name
-    BlipHash = 'blip_teamsters' --blips blip hash
-}
-Config.DevMode = false
-Config.CampRadius = 30 --radius you will be able to place props inside
-Config.CampCommand = true --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
-Config.CampItem = { 
-	enabled = false, 
-	CampItem = 'tent', 
-	RemoveItem = true
-} --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
+    -- Discord Webhooks
+    WebhookLink = '', --insert your webhook link here if you want webhooks
+    WebhookTitle = 'BCC-Camp',
+    WebhookAvatar = '',
 
-Config.CommandName = 'SetTent' --name of the command to set the tent
-Config.SetCampInTowns = true --If false players will be able to set camp inside of towns
-Config.Cooldown = true --if enabled the cooldown will be active
-Config.CooldownTime = 1800000 --time in ms before the player can set a camp again
+    CommandName = 'SetTent', --name of the command to set the tent
+    SetCampInTowns = true, --If false players will be able to set camp inside of towns
+    Cooldown = true,     --if enabled the cooldown will be active
+    CooldownTime = 1800000, --time in ms before the player can set a camp again
 
-Config.InventoryLimit = 200 --the camps storage limit
+    InventoryLimit = 200, --the camps storage limit
 
-Config.SetupTime = { --time to setup each prop in ms
-    TentSetuptime = 30000,
-    BenchSetupTime = 15000,
-    FireSetupTime = 10000,
-    StorageChestTime = 8000,
-    HitchingPostTime = 12000,
-    FastTravelPostTime = 35000,
-}
+    SetupTime = {        --time to setup each prop in ms
+		TentSetuptime = 30000,
+		BenchSetupTime = 15000,
+		FireSetupTime = 10000,
+		StorageChestTime = 8000,
+		HitchingPostTime = 12000,
+		FastTravelPostTime = 35000,
+    },
+    MinDistanceFromTent = 150,
+    --Fast Travel Setup
+    FastTravel = {
+        enabled = true, --if true it will allow fast travel
+        Locations = {
+            {
+                name = 'Valentine',                         --name that will show on the menu
+                coords = { x = -206.67, y = 642.26, z = 112.72 }, --coords to tp player too
+            },
+            {
+                name = 'Black Water',
+                coords = { x = -854.39, y = -1341.26, z = 43.45 },
+            },
+        }
+    },
 
---Fast Travel Setup
-Config.FastTravel = {
-    enabled = true, --if true it will allow fast travel
-    Locations = {
-        {
-            name = 'Valentine', --name that will show on the menu
-            coords = {x = -206.67, y = 642.26, z = 112.72}, --coords to tp player too
+    -------- Model Setup -------
+    BedRollModel = 'p_bedrollopen01x', --hash of the bedroll
+    Furniture = {
+        Campfires = {                --campfire hash
+            {
+                hash = 'p_campfire01x', --model of fire
+                name = 'Large Campfire', -- Name for Menu
+            },
+            {
+                hash = 'p_campfire05x',
+                name = 'Small Campfire',
+            },
         },
-        {
-            name = 'Black Water',
-            coords = {x = -854.39, y = -1341.26, z = 43.45},
+        Benchs = {
+            {
+                hash = 'p_bench_log03x',
+                name = 'Log Bench',
+            },
+            {
+                hash = 'p_ambchair02x',
+                name = 'Small Camp Chair',
+            },
         },
-    }
-}
+        HitchingPost = {
+            {
+                hash = 'p_hitchingpost01x',
+                name = 'Double Hitching Post',
+            },
+        },
+        Tent = {
+            {
+                hash = 'p_ambtentscrub01b',
+                name = 'Small Tent',
+            },
+            {
+                hash = 'p_ambtentgrass01x',
+                name = 'Medium Tent',
+            },
+        },
+        StorageChest = {
+            {
+                hash = 'p_chest01x',
+                name = 'Storage Chest',
+            },
+        },
+        FastTravelPost = {
+            {
+                hash = 'mp001_s_fasttravelmarker01x',
+                name = 'Travel Post',
+            },
+        },
+    },
 
--------- Model Setup -------
-Config.BedRollModel = 'p_bedrollopen01x' --hash of the bedroll
-Config.Furniture = {
-    Campfires = { --campfire hash
+    --- Any Model Used above MUST be listed here or code will break -----
+    PropHashes = {
+        'p_ambtentscrub01b',
+        'p_chest01x',
+        'p_campfire01x',
+        'p_bench_log03x',
+        'p_hitchingpost01x',
+        'mp001_s_fasttravelmarker01x',
+        'p_ambtentgrass01x',
+    },
+    --------------------------------- Town Locations ------------------------------------------------------------------------------------
+    ------------Ignore This for the most part. Unless you want to change the range of a town, or add more towns -------------------------
+    Towns = {                                               --creates a sub table in town table
         {
-            hash = 'p_campfire01x', --model of fire
-            name = 'Large Campfire', -- Name for Menu
+            coordinates = { x = -297.48, y = 791.1, z = 118.33 }, --Valentine (the towns coords)
+            range = 150,                                    --The distance away you have to be to be considered outside of town
         },
         {
-            hash = 'p_campfire05x',
-            name = 'Small Campfire',
-        },
-    },
-    Benchs = {
-        {
-            hash = 'p_bench_log03x',
-            name = 'Log Bench',
+            coordinates = { x = 2930.95, y = 1348.91, z = 44.1 }, --annesburg
+            range = 250,
         },
         {
-            hash = 'p_ambchair02x',
-            name = 'Small Camp Chair',
-        },
-    },
-    HitchingPost = {
-        {
-            hash = 'p_hitchingpost01x',
-            name = 'Double Hitching Post',
-        },
-    },
-    Tent = {
-        {
-            hash = 'p_ambtentscrub01b',
-            name = 'Small Tent',
+            coordinates = { x = 2632.52, y = -1312.31, z = 51.42 }, --Saint denis
+            range = 600,
         },
         {
-            hash = 'p_ambtentgrass01x',
-            name = 'Medium Tent',
+            coordinates = { x = 1346.14, y = -1312.5, z = 76.53 }, --Rhodes
+            range = 200,
         },
-    },
-    StorageChest = {
         {
-            hash = 'p_chest01x',
-            name = 'Storage Chest',
+            coordinates = { x = -1801.09, y = -374.86, z = 161.15 }, --strawberry
+            range = 150,
         },
+        {
+            coordinates = { x = -801.77, y = -1336.43, z = 43.54 }, --blackwater
+            range = 350
+        },
+        {
+            coordinates = { x = -3659.38, y = -2608.91, z = -14.08 }, --armadillo
+            range = 150,
+        },
+        {
+            coordinates = { x = -5498.97, y = -2950.61, z = -1.62 }, --Tumbleweed
+            range = 100,
+        },                                                     --You can add more towns by copy and pasting one of the tables above and changing the coords and range to your liking
     },
-}
-
---- Any Model Used above MUST be listed here or code will break -----
-Config.PropHashes = {
-    'p_ambtentscrub01b',
-    'p_chest01x',
-    'p_campfire01x',
-    'p_bench_log03x',
-    'p_hitchingpost01x',
-    'mp001_s_fasttravelmarker01x',
-    'p_ambtentgrass01x',
-}
---------------------------------- Town Locations ------------------------------------------------------------------------------------
-------------Ignore This for the most part. Unless you want to change the range of a town, or add more towns -------------------------
-Config.Towns = { --creates a sub table in town table
-    {
-        coordinates = {x = -297.48, y = 791.1, z = 118.33}, --Valentine (the towns coords)
-        range = 150, --The distance away you have to be to be considered outside of town
-    },
-    {
-        coordinates = {x = 2930.95, y = 1348.91, z = 44.1}, --annesburg
-        range = 250,
-    },
-    {
-        coordinates = {x = 2632.52, y = -1312.31, z = 51.42}, --Saint denis
-        range = 600,
-    },
-    {
-        coordinates = {x = 1346.14, y = -1312.5, z = 76.53}, --Rhodes
-        range = 200,
-    },
-    {
-        coordinates = {x = -1801.09, y = -374.86, z = 161.15}, --strawberry
-        range = 150,
-    },
-    {
-        coordinates = {x = -801.77, y = -1336.43, z = 43.54}, --blackwater
-        range = 350
-    },
-    {
-        coordinates = {x = -3659.38, y = -2608.91, z = -14.08}, --armadillo
-        range = 150,
-    },
-    {
-        coordinates = {x = -5498.97, y = -2950.61, z = -1.62}, --Tumbleweed
-        range = 100,
-    }, --You can add more towns by copy and pasting one of the tables above and changing the coords and range to your liking
 }

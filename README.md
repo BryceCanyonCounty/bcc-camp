@@ -7,7 +7,7 @@
 - Creates a menu which you can use to decorate your camp with multiple different props!
 - Creates a storage system for your camp to store your items in!
 - Optional fast travel system in camps!
-- Easy to translate via a Config.Language in the config.lua file!
+- Easy to translate via a language file inside language folder!
 - Everything is easy to configure to your liking via the config.lua file!
 - Versioner to keep upto date on updates!
 
@@ -23,8 +23,8 @@
 # Requirements
 - VORP Core
 - VORP Inventory
-- VORP Utils
 - VORP Character
+- feather-menu
 - bcc-utils
 
 # Side Notes
