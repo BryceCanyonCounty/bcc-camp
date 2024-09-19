@@ -1,4 +1,4 @@
----------------------------------- ENGLISH -------------------------------------------
+---------------------------------- German -------------------------------------------
 Locales['de_lang'] = {
     MenuName = 'Lager Menü',
     SetTent = 'Zelt Aufbauen',
@@ -22,7 +22,7 @@ Locales['de_lang'] = {
     TpDesc = 'Teleportiere zu ',
     FastTravelMenuName = 'Schnellreise ',
     SettingTentPbar = 'Baue das Zelt auf! ',
-    SettingBucnhPbar = 'Baue die Bank auf! ',
+    SettingBenchPbar = 'Baue die Bank auf! ',
     FireSetup = 'Mache ein Lagerfeuer! ',
     StorageChestSetup = 'Platziere Lagerkiste! ',
     HitchingPostSetup = 'Platziere Anbindepfosten! ',
