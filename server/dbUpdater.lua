@@ -15,9 +15,6 @@ CreateThread(function()
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
     ]])
 
-    -- Set up a flag to indicate that the DB has been updated
-    DbUpdated = true
-
     -- Print a success message to the console
     print("Database tables for \x1b[35m\x1b[1m*bcc-camp*\x1b[0m created or updated \x1b[32msuccessfully\x1b[0m.")
 

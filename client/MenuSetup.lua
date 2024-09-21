@@ -1,6 +1,7 @@
 ---------------------- Main Camp Menu Setup -----------------------------------
 local cdown = false
-function MainTentmenu()
+-- Main Tent Menu
+function MainTentmenu(furntype, model)
     local TentMenuPage = BCCcampMenu:RegisterPage('maintent:page')
 
     TentMenuPage:RegisterElement('header', {
@@ -13,6 +14,8 @@ function MainTentmenu()
         slot = "header",
         style = {}
     })
+
+    -- Button to set Tent (Shows only tents)
     TentMenuPage:RegisterElement('button', {
         label = _U('SetTent'),
         slot = "content",
@@ -24,7 +27,7 @@ function MainTentmenu()
                     TriggerServerEvent('bcc-camp:RemoveCampItem')
                 end
                 cdown = true
-                FurnMenu('tent')
+                FurnModelMenu('Tent') -- Only shows tent models
             else
                 VORPcore.NotifyRightTip(_U('Cdown'), 4000)
             end
@@ -32,7 +35,7 @@ function MainTentmenu()
             if Config.CampItem.enabled then
                 TriggerServerEvent('bcc-camp:RemoveCampItem')
             end
-            FurnMenu('tent')
+            FurnModelMenu('Tent') -- Only shows tent models
         end
     end)
 
@@ -41,7 +44,7 @@ function MainTentmenu()
         style = {}
     })
 
-    TextDisplay = TentMenuPage:RegisterElement('textdisplay', {
+    TentMenuPage:RegisterElement('textdisplay', {
         value = _U('SetTent_desc'),
         slot = "footer",
         style = {}
@@ -52,7 +55,8 @@ function MainTentmenu()
     })
 end
 
-function MainCampmenu()
+-- Main Camp Menu
+function MainCampmenu(furntype)
     local mainCampMenu = BCCcampMenu:RegisterPage('maincamp:page')
 
     -- Header for the main camp menu
@@ -74,39 +78,66 @@ function MainCampmenu()
         style = {},
     }, function()
         BCCcampMenu:Close()
+
+        -- Trigger the client-side deletion function
         delcamp()
+
+        -- Trigger the server-side event to delete the camp from the database
+        TriggerServerEvent('bcc-camp:DeleteCamp')
     end)
 
-    -- Button for Furniture Setup
+
+    -- Button for Furniture Setup (Triggers the FurnitureTypeMenu)
     mainCampMenu:RegisterElement('button', {
-        label = "Furniture",
+        label = "Furniture Setup",
         slot = "content",
         style = {},
     }, function()
         BCCcampMenu:Close()
-        FurnitureSetupMenu()
+        FurnitureTypeMenu() -- Open the menu for furniture types
     end)
-
-    -- Button for Setup Fast Travel Post
-    mainCampMenu:RegisterElement('button', {
-        label = _U('SetupFTravelPost'),
-        slot = "content",
-        style = {},
-    }, function()
-        BCCcampMenu:Close()
-        if Config.FastTravel.enabled then
-            spawnFastTravelPost()
-        else
-            VORPcore.NotifyRightTip(_U('FTravelDisabled'), 4000)
+    
+    -- Ensure you're looking for the FastTravelPost type in the config
+    local furntype = 'FastTravelPost'
+    
+    -- Iterate over the furniture models for FastTravelPost
+    if Config.Furniture[furntype] then
+        for _, v in pairs(Config.Furniture[furntype]) do
+            local modelExists = furnitureExists[furntype] and furnitureExists[furntype][v.hash]
+    
+            -- If the model already exists, show the "Remove" button
+            if modelExists then
+                mainCampMenu:RegisterElement('button', {
+                    label = _U('Remove') .. " " .. v.name, -- Button label for removing Fast Travel Post
+                    slot = "content",
+                    style = {},
+                }, function()
+                    BCCcampMenu:Close()
+                    DeleteFurniture(furntype, v.hash) -- Delete the selected Fast Travel Post
+                end)
+            else
+                -- If the model doesn't exist, show the "Set" button to place Fast Travel Post
+                mainCampMenu:RegisterElement('button', {
+                    label = _U('Set') .. " " .. v.name, -- Button label for setting Fast Travel Post
+                    slot = "content",
+                    style = {},
+                }, function()
+                    BCCcampMenu:Close()
+                    spawnFastTravelPost(furntype, v.hash) -- Spawn the Fast Travel Post
+                end)
+            end
         end
-    end)
+    else
+        devPrint("No FastTravelPost configuration found in Config.Furniture")
+    end
+
 
     mainCampMenu:RegisterElement('line', {
         slot = "footer",
         style = {}
     })
 
-    -- Back Button to return to the Main Camp Menu
+    -- Back Button to close the Main Camp Menu
     mainCampMenu:RegisterElement('button', {
         label = _U("closeButton"),
         slot = 'footer',
@@ -144,126 +175,6 @@ function MainCampmenu()
     -- Open the main camp menu
     BCCcampMenu:Open({
         startupPage = mainCampMenu
-    })
-end
-
-function FurnitureSetupMenu()
-    local furnitureMenu = BCCcampMenu:RegisterPage('furniture:page')
-
-    -- Header for the furniture setup menu
-    furnitureMenu:RegisterElement('header', {
-        value = _U('furnitureMenu'),
-        slot = "header",
-        style = {}
-    })
-
-    furnitureMenu:RegisterElement('line', {
-        slot = "header",
-        style = {}
-    })
-
-    -- Button for Campfire
-    if campfireExists then
-        furnitureMenu:RegisterElement('button', {
-            label = _U('RemoveFire'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            extinguishedCampfire()
-        end)
-    else
-        furnitureMenu:RegisterElement('button', {
-            label = _U('SetFire'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            FurnMenu('campfire')
-        end)
-    end
-
-    -- Button for Bench
-    if benchExists then
-        furnitureMenu:RegisterElement('button', {
-            label = _U('RemoveBench'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            deleteBench() -- You need to implement the logic to remove the bench
-        end)
-    else
-        furnitureMenu:RegisterElement('button', {
-            label = _U('SetBench'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            FurnMenu('bench')
-        end)
-    end
-
-    -- Button for Storage Chest
-    if storagechestExists then
-        furnitureMenu:RegisterElement('button', {
-            label = _U('RemoveStorageChest'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            deleteStorageChest() -- Implement the removal of the storage chest
-        end)
-    else
-        furnitureMenu:RegisterElement('button', {
-            label = _U('SetStorageChest'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            FurnMenu('storagechest')
-        end)
-    end
-
-    -- Button for Hitching Post
-    if hitchingpostExists then
-        furnitureMenu:RegisterElement('button', {
-            label = _U('RemoveHitchPost'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            deleteHitchPost() -- Implement the removal of the hitching post
-        end)
-    else
-        furnitureMenu:RegisterElement('button', {
-            label = _U('SetHitchPost'),
-            slot = "content",
-            style = {},
-        }, function()
-            BCCcampMenu:Close()
-            FurnMenu('hitchingpost')
-        end)
-    end
-
-    -- Footer Line
-    furnitureMenu:RegisterElement('line', {
-        slot = "footer",
-        style = {}
-    })
-
-    -- Back Button to return to the Main Camp Menu
-    furnitureMenu:RegisterElement('button', {
-        label = _U("backButton"),
-        slot = 'footer',
-        style = {}
-    }, function()
-        MainCampmenu()
-    end)
-
-    -- Open the furniture setup menu
-    BCCcampMenu:Open({
-        startupPage = furnitureMenu
     })
 end
 
@@ -316,92 +227,139 @@ function Tpmenu()
     })
 end
 
-function FurnMenu(furntype)
-    local FurnMenuPage = BCCcampMenu:RegisterPage('furnmenu:page')
+-- Menu to select furniture types (triggered from MainCampmenu)
+function FurnitureTypeMenu()
+    local FurnitureTypePage = BCCcampMenu:RegisterPage('furnituretype:page')
 
-    FurnMenuPage:RegisterElement('header', {
-        value = _U('FurnMenu'),
+    FurnitureTypePage:RegisterElement('header', {
+        value = _U('FurnitureTypes'),
         slot = "header",
         style = {}
     })
 
-    FurnMenuPage:RegisterElement('line', {
+    FurnitureTypePage:RegisterElement('line', {
         slot = "header",
         style = {}
     })
 
-    -- For tents
-    if furntype == 'tent' then
-        for _, v in pairs(Config.Furniture.Tent) do
-            FurnMenuPage:RegisterElement('button', {
-                label = v.name,
-                slot = "content",
-                style = {},
-            }, function()
-                BCCcampMenu:Close()
-                spawnTent(v.hash)
-            end)
-        end
+-- Get all furniture types from the config, excluding tents and travel posts
+local furnitureTypes = {}
 
-        -- For benches
-    elseif furntype == 'bench' then
-        for _, v in pairs(Config.Furniture.Benchs) do
-            FurnMenuPage:RegisterElement('button', {
-                label = v.name,
-                slot = "content",
-                style = {},
-            }, function()
-                BCCcampMenu:Close()
-                spawnItem('bench', v.hash)
-            end)
-        end
-
-        -- For hitching posts
-    elseif furntype == 'hitchingpost' then
-        for _, v in pairs(Config.Furniture.HitchingPost) do
-            FurnMenuPage:RegisterElement('button', {
-                label = v.name,
-                slot = "content",
-                style = {},
-            }, function()
-                BCCcampMenu:Close()
-                spawnItem('hitchingpost', v.hash)
-            end)
-        end
-
-        -- For campfires
-    elseif furntype == 'campfire' then
-        for _, v in pairs(Config.Furniture.Campfires) do
-            FurnMenuPage:RegisterElement('button', {
-                label = v.name,
-                slot = "content",
-                style = {},
-            }, function()
-                BCCcampMenu:Close()
-                spawnItem('campfire', v.hash)
-            end)
-        end
-
-        -- For storage chests
-    elseif furntype == 'storagechest' then
-        for _, v in pairs(Config.Furniture.StorageChest) do
-            FurnMenuPage:RegisterElement('button', {
-                label = v.name,
-                slot = "content",
-                style = {},
-            }, function()
-                BCCcampMenu:Close()
-                spawnStorageChest(v.hash)
-            end)
-        end
+-- Collect furniture types into a table, excluding Tent and FastTravelPost
+for furnType, _ in pairs(Config.Furniture) do
+    if furnType ~= 'Tent' and furnType ~= 'FastTravelPost' then
+        table.insert(furnitureTypes, furnType)
     end
+end
 
-    FurnMenuPage:RegisterElement('line', {
+-- Sort the furniture types alphabetically (or you can apply any other sorting logic)
+table.sort(furnitureTypes)
+
+-- Register the elements in the sorted order
+for _, furnType in ipairs(furnitureTypes) do
+    FurnitureTypePage:RegisterElement('button', {
+        label = _U(furnType),                               -- Use the type as the label
+        slot = "content",
+        style = {},
+    }, function()
+        BCCcampMenu:Close()
+        -- Open the menu for specific models in the selected furniture type
+        FurnModelMenu(furnType)
+    end)
+end
+
+    FurnitureTypePage:RegisterElement('line', {
+        slot = "footer",
+    })
+
+    -- Back button to close the menu
+    FurnitureTypePage:RegisterElement('button', {
+        label = _U("backButton"),
+        slot = 'footer',
+        style = {}
+    }, function()
+        BCCcampMenu:Close()
+        MainCampmenu() -- Return to the main camp menu
+    end)
+
+    FurnitureTypePage:RegisterElement('bottomline', {
         slot = "footer",
         style = {}
     })
 
     BCCcampMenu:Open({
-        startupPage = FurnMenuPage
+        startupPage = FurnitureTypePage
+    })
+end
+
+function FurnModelMenu(furntype)
+    local FurnModelPage = BCCcampMenu:RegisterPage('furnmodel:page')
+
+    FurnModelPage:RegisterElement('header', {
+        value = _U('SelectModel'),
+        slot = "header",
+        style = {}
+    })
+
+    FurnModelPage:RegisterElement('line', {
+        slot = "header",
+        style = {}
+    })
+
+    -- Iterate over the models for the selected furniture type
+    for _, v in pairs(Config.Furniture[furntype]) do
+        local modelExists = furnitureExists[furntype] and furnitureExists[furntype][v.hash]
+
+        -- If the model already exists, show the "Remove" button
+        if modelExists then
+            FurnModelPage:RegisterElement('button', {
+                label = _U('Remove') .. " " .. v.name, -- Button label for removing furniture
+                slot = "content",
+                style = {},
+            }, function()
+                BCCcampMenu:Close()
+                DeleteFurniture(furntype, v.hash) -- Delete the selected furniture
+                FurnitureTypeMenu()
+            end)
+        else
+            -- If the model doesn't exist, show the "Set" button to place furniture
+            FurnModelPage:RegisterElement('button', {
+                label = _U('Set') .. " " .. v.name, -- Button label for setting furniture
+                slot = "content",
+                style = {},
+            }, function()
+                BCCcampMenu:Close()
+                if furntype == 'Tent' then
+                    spawnTent(v.hash)           -- Spawn the tent specifically
+                else
+                    spawnItem(furntype, v.hash) -- Spawn other furniture items
+                end
+            end)
+        end
+    end
+
+    -- Footer elements
+    FurnModelPage:RegisterElement('line', {
+        slot = "footer",
+        style = {}
+    })
+
+    -- Back button to return to the furniture type selection menu
+    FurnModelPage:RegisterElement('button', {
+        label = _U("backButton"),
+        slot = 'footer',
+        style = {}
+    }, function()
+        BCCcampMenu:Close()
+        FurnitureTypeMenu()
+    end)
+
+    FurnModelPage:RegisterElement('bottomline', {
+        slot = "footer",
+        style = {}
+    })
+
+    BCCcampMenu:Open({
+        startupPage = FurnModelPage
     })
 end

@@ -54,18 +54,27 @@ function modelload(model) --model = variable with the models text hash
     end
 end
 
--- Function to check if there's a prop in front of the player, excluding the preview object
 function IsThereAnyPropInFrontOfPed(playerPed, excludeEntity)
-    for k, v in pairs(Config.PropHashes) do
-        local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 2.5, 0))
-        local Entity = GetClosestObjectOfType(x, y, z, 2.5, GetHashKey(v), false, false, false)
-        
-        -- Exclude the preview object from being detected
-        if Entity ~= 0 and Entity ~= excludeEntity then
-            return true
+    -- Iterate over each furniture category in Config.Furniture
+    for furnType, furnItems in pairs(Config.Furniture) do
+        -- Iterate over each furniture item in the category
+        for _, furnitureItem in ipairs(furnItems) do
+            -- Get the furniture hash from the config
+            local hashKey = GetHashKey(furnitureItem.hash)
+
+            -- Get the player's coordinates and calculate the position in front of the player
+            local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 2.5, 0))
+
+            -- Check for the closest object of the same hash type
+            local entity = GetClosestObjectOfType(x, y, z, 2.5, hashKey, false, false, false)
+
+            -- Exclude the preview object from being detected
+            if entity ~= 0 and entity ~= excludeEntity then
+                return true -- Return true if there's an object in front of the player
+            end
         end
     end
-    return false
+    return false -- No object found in front of the player
 end
 
 --Function used to spawn props
@@ -93,21 +102,4 @@ function progressbarfunc(time, text)
     Wait(time) --waits until the anim / progressbar above is over
     StopAnimTask(PlayerPedId(), "mini_games@story@beechers@build_floor@john","hammer_loop_good")
     FreezeEntityPosition(PlayerPedId(), false)
-end
-
-function getFurnitureHash(furnitureType)
-    if furnitureType == 'campfire' then
-        return Config.Furniture.Campfires[1].hash  -- Adjust if you want a specific campfire hash
-    elseif furnitureType == 'bench' then
-        return Config.Furniture.Benchs[1].hash  -- Adjust based on the exact bench
-    elseif furnitureType == 'hitchingpost' then
-        return Config.Furniture.HitchingPost[1].hash  -- Hitching post hash
-    elseif furnitureType == 'storagechest' then
-        return Config.Furniture.StorageChest[1].hash  -- Storage chest hash
-    elseif furnitureType == 'fasttravelpost' then
-        return Config.Furniture.FastTravelPost[1].hash  -- Storage chest hash
-    else
-        devPrint("Unknown furniture type: " .. tostring(furnitureType))
-        return nil
-    end
 end

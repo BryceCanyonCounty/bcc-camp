@@ -14,8 +14,8 @@ shared_scripts {
 
 client_scripts {
     'client/functions.lua',
-    'client/MenuSetup.lua',
     'client/CampSetup.lua',
+    'client/MenuSetup.lua',
 }
 
 server_scripts {
@@ -24,7 +24,7 @@ server_scripts {
     'server/server.lua',
 }
 
-version '1.0.8'
+version '1.0.9'
 
 dependencies {
     'vorp_core',

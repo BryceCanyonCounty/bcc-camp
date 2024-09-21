@@ -9,7 +9,7 @@ Config = {
         BlipName = 'Camp',      --blips name
         BlipHash = 'blip_teamsters' --blips blip hash
     },
-    DevMode = true,
+    DevMode = false,
     CampRadius = 30, --radius you will be able to place props inside
     CampCommand = true, --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
     CampItem = {
@@ -105,18 +105,19 @@ Config = {
                 name = 'Travel Post',
             },
         },
+        -- If you want to create more furniture bellow is an example
+        --[[Tables = {
+            {
+                hash = 'p_table01x',
+                name = 'Wooden Table',
+            },
+            {
+                hash = 'p_table02x',
+                name = 'Metal Table',
+            },
+        },]]--
     },
-
-    --- Any Model Used above MUST be listed here or code will break -----
-    PropHashes = {
-        'p_ambtentscrub01b',
-        'p_chest01x',
-        'p_campfire01x',
-        'p_bench_log03x',
-        'p_hitchingpost01x',
-        'mp001_s_fasttravelmarker01x',
-        'p_ambtentgrass01x',
-    },
+    
     --------------------------------- Town Locations ------------------------------------------------------------------------------------
     ------------Ignore This for the most part. Unless you want to change the range of a town, or add more towns -------------------------
     Towns = {                                               --creates a sub table in town table
