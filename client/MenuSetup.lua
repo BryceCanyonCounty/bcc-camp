@@ -89,7 +89,7 @@ function MainCampmenu(furntype)
 
     -- Button for Furniture Setup (Triggers the FurnitureTypeMenu)
     mainCampMenu:RegisterElement('button', {
-        label = "Furniture Setup",
+        label = _U('FurnitureSetup'),
         slot = "content",
         style = {},
     }, function()
