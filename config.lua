@@ -15,7 +15,8 @@ Config = {
     CampItem = {
         enabled = false,
         CampItem = 'tent',
-        RemoveItem = true
+        RemoveItem = true,
+	GiveBack = true,	-- Give back tent-item after remove camp
     }, --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 
     -- Discord Webhooks
