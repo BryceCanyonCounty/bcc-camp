@@ -22,12 +22,17 @@ Locales['en_lang'] = {
     TpDesc = 'Teleport to ',
     FastTravelMenuName = 'Fast Travel ',
     SettingTentPbar = 'Pitching the tent! ',
-    SettingBenchPbar = 'Setting Up the Bench! ',
-    FireSetup = 'Starting a campfire! ',
     StorageChestSetup = 'Placing Storage Chest! ',
-    HitchingPostSetup = 'Setting up the hitching post! ',
     FastTravelPostSetup = 'Settin up the fast travel post! ',
     RemoveFire = 'Remove Camp Fire',
+    -- missing in CampSetup.lua
+    HitchingPostSetup = 'Setting up the hitching post! ',
+    FireSetup = 'Starting a campfire! ',
+    SettingBenchPbar = 'Setting Up the Bench! ',
+    -- added because exists in CampSetup.lua
+    SettingItemPbar = "is being built...",
+    -- added because missing in MenuSetup.lua
+    FurnitureSetup = "Furniture management",
 
     --Camp Setup Translations
     CantBuild = 'You can not build here!',
