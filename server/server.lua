@@ -361,7 +361,11 @@ AddEventHandler('bcc-camp:DeleteCamp', function()
     TriggerEvent('bcc-camp:loadCampData')
     -- Send a Discord notification for logging purposes
     Discord:sendMessage("**Camp Deleted**\nCharacter: " .. character.firstname .. " " .. character.lastname)
-    
+    if Config.CampItem.enabled then
+        if Config.CampItem.GiveBack then
+            exports.vorp_inventory:addItem(src, Config.CampItem.CampItem, 1)
+        end
+    end
 end)
 
 
