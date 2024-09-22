@@ -22,12 +22,17 @@ Locales['de_lang'] = {
     TpDesc = 'Teleportiere zu ',
     FastTravelMenuName = 'Schnellreise ',
     SettingTentPbar = 'Baue das Zelt auf! ',
-    SettingBenchPbar = 'Baue die Bank auf! ',
-    FireSetup = 'Mache ein Lagerfeuer! ',
     StorageChestSetup = 'Platziere Lagerkiste! ',
-    HitchingPostSetup = 'Platziere Anbindepfosten! ',
     FastTravelPostSetup = 'Platziere Schnellreisepfosten! ',
     RemoveFire = 'Lagerfeuer Entfernen',
+    -- missing in CampSetup.lua
+    HitchingPostSetup = 'Platziere Anbindepfosten! ',
+    FireSetup = 'Mache ein Lagerfeuer! ',
+    SettingBenchPbar = 'Baue die Bank auf! ',
+    -- added because exists in CampSetup.lua
+    SettingItemPbar = "wird gebaut...",
+    -- added because missing in MenuSetup.lua
+    FurnitureSetup = "Möbel-Verwaltung",
 
     --Camp Setup Translations
     CantBuild = 'Du kannst hier nicht Bauen!',
@@ -53,19 +58,20 @@ Locales['de_lang'] = {
     furnitureMenu = 'Einrichtungs Menü',
     RemoveStorageChest = 'Entferne Lagerkiste',
     RemoveBench = 'Entferne Bank',
-    RemoveHitchPost = 'Entferne Anbindepfosten'
-    Remove = 'Remove',
-    Set = 'Set',
-    SelectModel = 'Select Model',
-    HitchingPost = 'Hitching Posts',
-    FastTravelPost = 'Fast Travel Posts',
-    Campfires = 'Camp Fires',
-    StorageChest = 'Storage Chests',
-    Tent = 'Tents',
-    Benchs = 'Benches',
-    Tables = 'Tables',
-    FurnitureTypes = 'Furniture Types',
-    FurnitureExists = 'Furniture Exists',
-    FurniturePlaced = 'Furniture Placed',
-    FurnitureCancel = 'Cancel Placement'
+    RemoveHitchPost = 'Entferne Anbindepfosten',
+    Remove = 'Entferne',
+    Set = 'Baue',
+    SelectModel = 'Wähle Modell',
+    HitchingPost = 'Anbindepfosten',
+    FastTravelPost = 'Schnellreise-Pfosten',
+    Campfires = 'Lagerfeuer',
+    StorageChest = 'Lagerkiste',
+    Tent = 'Zelt',
+    Benchs = 'Sitzgelegenheit',
+    Tables = 'Tisch',
+    FurnitureTypes = 'Möbel-Typ',
+    FurnitureExists = 'Möbel vorhanden',
+    FurniturePlaced = 'Möbel platziert',
+    FurnitureCancel = 'Platzierung abbrechen',
+
 }
