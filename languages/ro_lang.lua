@@ -22,12 +22,17 @@ Locales["ro_lang"] = {
     TpDesc = 'Teleportati-va la ',
     FastTravelMenuName = 'Calatorie Rapida',
     SettingTentPbar = 'Instalarea taberei!',
-    SettingBenchPbar = 'Configurarea bancii!',
-    FireSetup = 'Setarea unui foc de tabara!',
     StorageChestSetup = 'Plasarea Cufarului de Depozitare!',
-    HitchingPostSetup = 'Configurarea postului de legare!',
     FastTravelPostSetup = 'Configurarea postului de calatorie rapida!',
     RemoveFire = 'Elimina Focul de Tabara',
+    -- missing in CampSetup.lua
+    HitchingPostSetup = 'Configurarea postului de legare!',
+    FireSetup = 'Setarea unui foc de tabara!',
+    SettingBenchPbar = 'Configurarea bancii!',
+    -- added because exists in CampSetup.lua
+    SettingItemPbar = "se construieste...",
+    -- added because missing in MenuSetup.lua
+    FurnitureSetup = "Managementul mobilierului",
     
     -- Traduceri Configurare Tabara
     CantBuild = 'Nu poti construi aici!',
