@@ -1,6 +1,30 @@
 Config = {
     -- Set Language
     defaultlang = 'en_lang',
+    ---------------------------- ox_target and ox_lib Configuration ------------------------------------------
+
+    oxtarget = true, -- Enable or disable ox target option for camp interaction.
+    oxdistance = 2.0, -- Distance for ox target to work.
+
+    notify = 'ox', -- ox for ox_lib notification vorp for vorp notification
+    oxposition = 'center-right', -- Ox notifiation position. use 'top' or 'top-right' or 'top-left' or 'bottom' or 'bottom-right' or 'bottom-left' or 'center-right' or 'center-left'
+    oxIconColor = 'white',
+    oxstyle = { -- Ox Lib notification css style you can change this as you wish to match for your server theme
+        backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://cdn.cs1.frontlineesport.com/yGexrZvPOfRu.jpg")', -- Adds a black overlay with a opacity on top of the image
+        backgroundSize = 'cover',           -- Ensures the image covers the entire notification area
+        backgroundRepeat = 'no-repeat',     -- Prevents the image from repeating
+        backgroundPosition = 'center',      -- Centers the image
+        color = '#FFFFFF',                  -- Off-white text color
+        textAlign = 'center',               -- Align the text
+        lineHeight = '1.4',
+        width = 'auto',
+        minWidth = '250px',
+        maxWidth = '500px',
+        ['.description'] = {
+            fontSize = '17px',
+            fontFamily = 'Georgia, Times, Serif',
+        },
+    },
     ---------------------------- Camp Configuration ------------------------------------------
 
     --Blip Setup
@@ -11,22 +35,26 @@ Config = {
     },
     DevMode = false,
     CampRadius = 30, --radius you will be able to place props inside
-    CampCommand = true, --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
+    CampCommand = false, --If true you will set your tent via command (do not have this and camp item enabled at the same time use one or the other)
     CampItem = {
-        enabled = false,
+        enabled = true,
         CampItem = 'tent',
         RemoveItem = true,
 	GiveBack = true,	-- Give back tent-item after remove camp
     }, --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 
     -- Discord Webhooks
-    WebhookLink = '', --insert your webhook link here if you want webhooks
-    WebhookTitle = 'BCC-Camp',
-    WebhookAvatar = '',
+    discordLog = true, -- Enable disable discord logs
+    WebhookLink = 'https://discord.com/api/webhooks/1296030989289787423/Ju0u_WFAfn-lnSEfYV4MwoNpi3dfRLyNXtweV5bxh2Wl-wN5GkD1fa1I8l9g4LAXPw4i', --insert your webhook link here if you want webhooks
+    WebhookTitle = 'Frontline County Sri Lanka',
+    WebhookAvatar = 'https://raw.githubusercontent.com/MrTerabyteLK/frontline-resources/refs/heads/main/Frontline-County-Sri-Lanka-Images/frontline-county-sri-lanka-low-size-logo.jpg',
+    
+    -- Enable or disable ox logging DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU DOING (You can use this for Loki, Datadog, FiveManage, Gray Log. Refer the ox_lib documentation)
+    oxLogger = true,
 
     CommandName = 'SetTent', --name of the command to set the tent
     SetCampInTowns = true, --If false players will be able to set camp inside of towns
-    Cooldown = true,     --if enabled the cooldown will be active
+    Cooldown = false,     --if enabled the cooldown will be active
     CooldownTime = 1800000, --time in ms before the player can set a camp again
 
     InventoryLimit = 200, --the camps storage limit
@@ -42,7 +70,7 @@ Config = {
     MinDistanceFromTent = 150,
     --Fast Travel Setup
     FastTravel = {
-        enabled = true, --if true it will allow fast travel
+        enabled = false, --if true it will allow fast travel
         Locations = {
             {
                 name = 'Valentine',                         --name that will show on the menu
@@ -86,12 +114,12 @@ Config = {
         },
         Tent = {
             {
-                hash = 'p_ambtentscrub01b',
+                hash = 'p_gangtentlemoyne01x',
                 name = 'Small Tent',
             },
             {
-                hash = 'p_ambtentgrass01x',
-                name = 'Medium Tent',
+                hash = 'p_tent0101x',
+                name = 'Larg Tent',
             },
         },
         StorageChest = {
@@ -100,12 +128,12 @@ Config = {
                 name = 'Storage Chest',
             },
         },
-        FastTravelPost = {
-            {
-                hash = 'mp001_s_fasttravelmarker01x',
-                name = 'Travel Post',
-            },
-        },
+        -- FastTravelPost = {
+        --     {
+        --         hash = 'mp001_s_fasttravelmarker01x',
+        --         name = 'Travel Post',
+        --     },
+        -- },
         -- If you want to create more furniture bellow is an example
         --[[Tables = {
             {

@@ -52,7 +52,11 @@ Locales['de_lang'] = {
     extinguishCampfire = 'Lösche das Feuer',
     chestPlacement = 'Lagerkiste Platzieren',
     placeChest = 'Platziere Lagerkiste',
-
+    campCreated = 'Camp created successfully',
+    campUpdated = 'Camp updated successfully',
+    campDeleted = 'Camp deleted successfully',
+    furnitureRemoved = 'Furniture removed successfully',
+    noFurniture = 'No furniture found to remove',
     backButton = 'Zurück',
     closeButton = 'Schließen',
     furnitureMenu = 'Einrichtungs Menü',
@@ -73,5 +77,32 @@ Locales['de_lang'] = {
     FurnitureExists = 'Möbel vorhanden',
     FurniturePlaced = 'Möbel platziert',
     FurnitureCancel = 'Platzierung abbrechen',
+
+    -- Discord webhook log related
+    disLogCampCreated = 'Camp Created',
+    disLogCharacter = 'Character: ',
+    disLogCampCords = 'Coordinates: ',
+    disLogFurnitureInsert = 'Furniture Inserted',
+    disLogFurnitureType = 'Furniture Type: ',
+    disLogFurnitureModel = 'Furniture Model: ',
+    disLogFurnitureRemoved = 'Furniture Removed',
+    disLogRemovedFurniture = 'Removed Furniture: ',
+    disLogCampDeleted = 'Camp Deleted',
+    
+    -- Ox Logger Related
+    oxLogCampEvent = 'BCC Camp Created',
+    oxLogMessageStart = 'BCC Camp: Player ',
+    oxLogCampCreated = ' created a camp.',
+    oxLogPID = 'PID: ',
+    oxLogDiscordId = "Logged Discord ID: ",
+    oxLogLicenseKey = 'Logged License Key: ',
+    oxLogCampCords = 'Camp Coordinates: ',
+    oxLogFurnitureEvent = 'BCC Camp Furniture Inserted',
+    oxLogFurnitureInserted = ' inserted a furniture to the camp.',
+    oxLogFurnitureRemoveEvent = 'BCC Camp Furniture Removed',
+    oxLogFurnitureRemoved = ' removed a furniture from the camp.',
+    oxLogCampRemoveEvent = 'BCC Camp Removed',
+    oxLogCampRemoved = " removed a camp.",
+
 
 }

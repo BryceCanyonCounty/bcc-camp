@@ -121,14 +121,44 @@ function spawnTentAndFurniture(tentModel, furnitureModels, campCoords)
                 table.insert(spawnedFurniture, furnitureObject)
 
                 -- Set specific references for furniture types
-                if furniture.type == 'Campfires' then
-                    campfire = furnitureObject
-                elseif furniture.type == 'FastTravelPost' then
+                if furniture.type == 'FastTravelPost' then
                     fasttravelpost = furnitureObject
                 elseif furniture.type == 'StorageChest' then
                     storagechest = furnitureObject
                 end
 
+                -- Add ox_target options if Config.oxtarget is true
+                if Config.oxtarget then
+                    if furniture.type == 'FastTravelPost' then
+                        exports.ox_target:addLocalEntity(furnitureObject, {
+                                {
+                                    name = 'fasttravelpost' .. furnitureObject,
+                                    label = 'Fast Travel',
+                                    icon = 'fa-solid fa-couch',
+                                    onSelect = function()
+                                            devPrint("Opening fast travel menu")
+                                            Tpmenu()
+                                    end,
+                                    distance = Config.oxdistance
+                                },
+                        })
+                    end
+                    if furniture.type == 'StorageChest' then
+                        exports.ox_target:addLocalEntity(furnitureObject, {
+                            {
+                                name = 'campstorage' .. furnitureObject,
+                                label = _U('OpenCampStorage'),
+                                icon = 'fa-solid fa-box',
+                                onSelect = function()
+                                        devPrint("Opening storage chest")
+                                        TriggerServerEvent('bcc-camp:OpenInv')
+                                end,
+                                distance = Config.oxdistance
+                            },
+                        })
+                        
+                    end
+                end
             else
                 devPrint("Failed to create " .. furniture.type .. " with model " .. furnitureModel)
             end
@@ -149,83 +179,92 @@ function spawnTentAndFurniture(tentModel, furnitureModels, campCoords)
         devPrint("Blip created for tent at: " .. x .. ", " .. y .. ", " .. z)
     end
 
-    -- Manage tent prompt interaction
-    local PromptGroup1 = BccUtils.Prompts:SetupPromptGroup()
-    local OpenCampPrompt1 = PromptGroup1:RegisterPrompt(_U('manageCamp'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
-    local PromptFastTravel = BccUtils.Prompts:SetupPromptGroup()
-    local OpenFastTravel = PromptFastTravel:RegisterPrompt(_U('OpenFastTravel'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
-    local PromptCampStorage = BccUtils.Prompts:SetupPromptGroup()
-    local OpenCampStorage = PromptCampStorage:RegisterPrompt(_U('OpenCampStorage'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
-    local PromptRemoveFire = BccUtils.Prompts:SetupPromptGroup()
-    local OpenRemoveFire = PromptRemoveFire:RegisterPrompt(_U('RemoveFire'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
-
-    Citizen.CreateThread(function()
-        while true do
-            Wait(5)
-            local playerCoords = GetEntityCoords(PlayerPedId())
-            local dist = GetDistanceBetweenCoords(x, y, z, playerCoords.x, playerCoords.y, playerCoords.z, true)
-            if dist < 2 then
-                PromptGroup1:ShowGroup(_U('camp'))
-                if OpenCampPrompt1:HasCompleted() then
-                    devPrint("OpenCampPrompt triggered, opening MainCampmenu")
+    if Config.oxtarget then
+        -- Use ox_target for tent interaction
+        exports.ox_target:addLocalEntity(tent, {
+            {
+                name = 'tentInteraction',
+                label = _U('manageCamp'),
+                icon = 'fa-solid fa-campground',
+                onSelect = function()
+                    devPrint("ox_target interaction triggered, opening MainCampmenu")
                     MainCampmenu()
-                end
-            elseif dist > 200 then
-                Wait(2000)
-            end
+                end,
+                distance = Config.oxdistance
+            }
+        })
+    else
+        -- Default prompt-based interaction
+        local PromptGroup1 = BccUtils.Prompts:SetupPromptGroup()
+        local OpenCampPrompt1 = PromptGroup1:RegisterPrompt(_U('manageCamp'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
+        local PromptFastTravel = BccUtils.Prompts:SetupPromptGroup()
+        local OpenFastTravel = PromptFastTravel:RegisterPrompt(_U('OpenFastTravel'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
+        local PromptCampStorage = BccUtils.Prompts:SetupPromptGroup()
+        local OpenCampStorage = PromptCampStorage:RegisterPrompt(_U('OpenCampStorage'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
 
-            -- Loop through furniture in `furnitureExists` and check proximity
-            for furnType, models in pairs(furnitureExists) do
-                for modelHash, data in pairs(models) do
-                    -- Check if data is a table and has the necessary properties
-                    if type(data) == "table" and data.object then
-                        local furnitureObject = data.object
-                        local fx, fy, fz = data.x, data.y, data.z
-            
-                        local dist = GetDistanceBetweenCoords(fx, fy, fz, playerCoords.x, playerCoords.y, playerCoords.z, true)
-            
-                        if dist < 2 then
-                            -- Show specific prompt based on the furniture type
-                            if furnType == "Campfires" then
-                                PromptRemoveFire:ShowGroup(_U('camp'))
-                                if OpenRemoveFire:HasCompleted() then
-                                    extinguishedCampfire()
+        Citizen.CreateThread(function()
+            while true do
+                Wait(5)
+                local playerCoords = GetEntityCoords(PlayerPedId())
+                local dist = GetDistanceBetweenCoords(x, y, z, playerCoords.x, playerCoords.y, playerCoords.z, true)
+                if dist < 2 then
+                    PromptGroup1:ShowGroup(_U('camp'))
+                    if OpenCampPrompt1:HasCompleted() then
+                        devPrint("OpenCampPrompt triggered, opening MainCampmenu")
+                        MainCampmenu()
+                    end
+                elseif dist > 200 then
+                    Wait(2000)
+                end
+
+                -- Loop through furniture in `furnitureExists` and check proximity
+                for furnType, models in pairs(furnitureExists) do
+                    for modelHash, data in pairs(models) do
+                        if type(data) == "table" and data.object then
+                            local furnitureObject = data.object
+                            local fx, fy, fz = data.x, data.y, data.z
+                            local dist = GetDistanceBetweenCoords(fx, fy, fz, playerCoords.x, playerCoords.y, playerCoords.z, true)
+
+                            if dist < 2 then
+                                if furnType == "FastTravelPost" then
+                                    PromptFastTravel:ShowGroup(_U('camp'))
+                                    if OpenFastTravel:HasCompleted() then
+                                        devPrint("Opening fast travel menu")
+                                        Tpmenu()
+                                    end
+                                elseif furnType == "StorageChest" then
+                                    PromptCampStorage:ShowGroup(_U('camp'))
+                                    if OpenCampStorage:HasCompleted() then
+                                        devPrint("Opening storage chest")
+                                        TriggerServerEvent('bcc-camp:OpenInv')
+                                    end
                                 end
-                            elseif furnType == "FastTravelPost" then
-                                PromptFastTravel:ShowGroup(_U('camp'))
-                                if OpenFastTravel:HasCompleted() then
-                                    devPrint("Opening fast travel menu")
-                                    Tpmenu()
-                                end
-                            elseif furnType == "StorageChest" then
-                                PromptCampStorage:ShowGroup(_U('camp'))
-                                if OpenCampStorage:HasCompleted() then
-                                    devPrint("Opening storage chest")
-                                    TriggerServerEvent('bcc-camp:OpenInv')
-                                end
+                            elseif dist > 200 then
+                                Wait(2000)
                             end
-                        elseif dist > 200 then
-                            Wait(2000) -- Reduce loop frequency if the player is far away
+                        else
+                            devPrint("Warning: Invalid furniture data for " .. tostring(furnType) .. " with model hash: " .. tostring(modelHash))
                         end
-                    else
-                        devPrint("Warning: Invalid furniture data for " .. tostring(furnType) .. " with model hash: " .. tostring(modelHash))
                     end
                 end
             end
-            
-        end
-    end)
+        end)
+    end
 end
+
 
 function spawnTent(model)
     devPrint("spawnTent called with model: " .. tostring(model)) -- Dev print
     local infrontofplayer = IsThereAnyPropInFrontOfPed(PlayerPedId())
     local PromptGroup = BccUtils.Prompts:SetupPromptGroup()
-    local OpenCampPrompt = PromptGroup:RegisterPrompt(_U('manageCamp'), BccUtils.Keys["G"], 1, 1, true, 'hold',
-        { timedeventhash = "MEDIUM_TIMED_EVENT" })
+    local OpenCampPrompt = PromptGroup:RegisterPrompt(_U('manageCamp'), BccUtils.Keys["G"], 1, 1, true, 'hold', { timedeventhash = "MEDIUM_TIMED_EVENT" })
 
     if infrontofplayer or tentcreated then
-        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify({description = _U('CantBuild'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         devPrint("Cannot build tent, prop in front or tent already created") -- Dev print
     else
         progressbarfunc(Config.SetupTime.TentSetuptime, _U('SettingTentPbar'))
@@ -247,34 +286,61 @@ function spawnTent(model)
         local tentCoords = { x = x, y = y, z = z }
         TriggerServerEvent('bcc-camp:saveCampData', tentCoords, nil, model) -- Pass tent_model here
 
+        if Config.CampItem.enabled then
+            TriggerServerEvent('bcc-camp:RemoveCampItem')
+        end
+
         if Config.CampBlips.enable then
             blip = BccUtils.Blips:SetBlip(Config.CampBlips.BlipName, Config.CampBlips.BlipHash, 0.2, x, y, z)
             devPrint("Blip created for tent") -- Dev print
         end
 
-        while DoesEntityExist(tent) do
-            Wait(5)
-            local x2, y2, z2 = table.unpack(GetEntityCoords(PlayerPedId()))
-            local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
-            if dist < 2 then
-                PromptGroup:ShowGroup(_U('camp'))
-                if OpenCampPrompt:HasCompleted() then
-                    devPrint("OpenCampPrompt triggered, opening MainCampmenu") -- Dev print
-                    MainCampmenu()
+        -- Interaction using ox_target or default prompt
+        if Config.oxtarget then
+            -- Add ox_target interaction for the tent
+            exports.ox_target:addLocalEntity(tent, {
+                {
+                    name = 'campInteraction' .. tent,
+                    label = _U('manageCamp'),
+                    icon = 'fa-solid fa-campground',
+                    onSelect = function()
+                        devPrint("ox_target interaction triggered, opening MainCampmenu") -- Dev print
+                        MainCampmenu()
+                    end,
+                    distance = Config.oxdistance
+                }
+            })
+        else
+            -- Default prompt-based interaction
+            while DoesEntityExist(tent) do
+                Wait(5)
+                local x2, y2, z2 = table.unpack(GetEntityCoords(PlayerPedId()))
+                local dist = GetDistanceBetweenCoords(x, y, z, x2, y2, z2, true)
+                if dist < 2 then
+                    PromptGroup:ShowGroup(_U('camp'))
+                    if OpenCampPrompt:HasCompleted() then
+                        devPrint("OpenCampPrompt triggered, opening MainCampmenu") -- Dev print
+                        MainCampmenu()
+                    end
+                elseif dist > 200 then
+                    Wait(2000)
                 end
-            elseif dist > 200 then
-                Wait(2000)
             end
         end
     end
 end
+
 
 function spawnItem(furnType, selectedModel)
     devPrint("spawnItem called for " .. furnType .. " with model: " .. tostring(selectedModel))
 
     -- Check if this model has already been placed
     if furnitureExists[furnType] and furnitureExists[furnType][selectedModel] then
-        VORPcore.NotifyRightTip(_U('FurnitureExists', furnType), 4000)
+        if Config.notify == 'Vorp' then
+            VORPcore.NotifyRightTip(_U('FurnitureExists', furnType), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify({description = _U('FurnitureExists'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         devPrint(furnType .. " with model " .. selectedModel .. " already exists.")
         return
     end
@@ -290,7 +356,11 @@ function spawnItem(furnType, selectedModel)
     local currentHeading = 0  -- Keep track of the current rotation of the object
 
     -- Notify the player to move around and place the item
-    VORPcore.NotifyRightTip(_U('MoveAroundToPlace'), 5000)
+    if Config.notify == 'vorp' then
+        VORPcore.NotifyRightTip(_U('MoveAroundToPlace'), 5000)
+    elseif Config.notify == 'ox' then
+        lib.notify({description = _U('MoveAroundToPlace'), duration = 5000, type = 'inform', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+    end
 
     Citizen.CreateThread(function()
         -- Load the model for the selected item
@@ -349,7 +419,11 @@ function spawnItem(furnType, selectedModel)
                 local notneartent = notneartentdistcheck(tent)
 
                 if infrontofplayer or notneartent then
-                    VORPcore.NotifyRightTip(_U('cannotBuildNear'), 4000)
+                    if Config.notify == 'vorp' then
+                        VORPcore.NotifyRightTip(_U('cannotBuildNear'), 4000)
+                    elseif Config.notify == 'ox' then
+                        lib.notify({description = _U('cannotBuildNear'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+                    end
                     devPrint("Cannot place item, too close to tent or prop in front.")
                 else
                     placing = false -- Stop the loop when the player is in the correct location
@@ -411,8 +485,11 @@ function spawnStorageChest(model)
 
     local placing = true
     local currentHeading = 0 -- Keep track of the current rotation of the object
-
-    VORPcore.NotifyRightTip(_U('MoveAndPlace'), 5000)
+    if Config.notify == 'vorp' then
+        VORPcore.NotifyRightTip(_U('MoveAndPlace'), 5000)
+    elseif Config.notify == 'ox' then
+        lib.notify({description = _U('MoveAndPlace'), duration = 5000, type = 'inform', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+    end
 
     Citizen.CreateThread(function()
         -- Load the model for the storage chest
@@ -470,7 +547,11 @@ function spawnStorageChest(model)
                 local notneartent = notneartentdistcheck(tent)
 
                 if infrontofplayer or notneartent then
-                    VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+                    if Config.notify == 'vorp' then
+                        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+                    elseif Config.notify == 'ox' then
+                        lib.notify({description = _U('CantBuild'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+                    end
                     devPrint("Cannot place storage chest, too close to tent or prop in front")
                 else
                     placing = false -- Confirm placement
@@ -505,6 +586,42 @@ function spawnStorageChest(model)
                     table.insert(spawnedFurniture, finalObject)
 
                     devPrint("Storage chest created at coordinates: " .. newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)
+
+                    -- Add ox_target if enabled
+                    if Config.oxtarget then
+
+                        devPrint("Adding ox_target interaction to storage chest")
+                        exports.ox_target:addLocalEntity(finalObject, {
+                            {
+                                name = 'storageChestInteraction' .. finalObject,
+                                label = _U('OpenCampStorage'),
+                                icon = 'fa-solid fa-box',
+                                onSelect = function()
+                                    devPrint("Opening storage chest via ox_target")
+                                    TriggerServerEvent('bcc-camp:OpenInv')
+                                end,
+                                distance = Config.oxdistance
+                            }
+                        })
+                    else
+                        -- Default prompt handling for non-ox_target usage
+                        Citizen.CreateThread(function()
+                            while DoesEntityExist(finalObject) do
+                                Wait(5)
+                                local playerCoords = GetEntityCoords(PlayerPedId())
+                                local dist = GetDistanceBetweenCoords(newObjectPos.x, newObjectPos.y, newObjectPos.z, playerCoords.x, playerCoords.y, playerCoords.z, true)
+                                if dist < 2 then
+                                    PromptGroupStorage:ShowGroup(_U('OpenCampStorage'))
+                                    if PlaceStorageChestPrompt:HasCompleted() then
+                                        devPrint("Opening storage chest via prompt")
+                                        TriggerServerEvent('bcc-camp:OpenInv')
+                                    end
+                                elseif dist > 200 then
+                                    Wait(2000)
+                                end
+                            end
+                        end)
+                    end
                 end
             end
 
@@ -523,7 +640,11 @@ function spawnFastTravelPost(furnType, selectedModel)
 
     -- Check if this model has already been placed
     if furnitureExists[furnType] and furnitureExists[furnType][selectedModel] then
-        VORPcore.NotifyRightTip(_U('FurnitureExists', furnType), 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(_U('FurnitureExists', furnType), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify({description = _U('FurnitureExists'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         devPrint(furnType .. " with model " .. selectedModel .. " already exists.")
         return
     end
@@ -537,8 +658,11 @@ function spawnFastTravelPost(furnType, selectedModel)
 
     local placing = true
     local currentHeading = 0 -- Keep track of the current rotation of the object
-
-    VORPcore.NotifyRightTip(_U('MoveAndPlace'), 5000)
+    if Config.notify == 'vorp' then
+        VORPcore.NotifyRightTip(_U('MoveAndPlace'), 5000)
+    elseif Config.notify == 'ox' then
+        lib.notify({description = _U('MoveAndPlace'), duration = 5000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+    end
 
     Citizen.CreateThread(function()
         -- Load the model for the fast travel post
@@ -596,7 +720,11 @@ function spawnFastTravelPost(furnType, selectedModel)
                 local notneartent = notneartentdistcheck(tent)
 
                 if infrontofplayer or notneartent then
-                    VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+                    if Config.notify == 'vorp' then
+                        VORPcore.NotifyRightTip(_U('CantBuild'), 4000)
+                    elseif Config.notify == 'ox' then
+                        lib.notify({description = _U('CantBuild'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+                    end
                     devPrint("Cannot place fast travel post, too close to tent or prop in front")
                 else
                     placing = false -- Confirm placement
@@ -631,6 +759,41 @@ function spawnFastTravelPost(furnType, selectedModel)
                     table.insert(spawnedFurniture, finalObject)
 
                     devPrint("Fast travel post created at coordinates: " .. newObjectPos.x .. ", " .. newObjectPos.y .. ", " .. newObjectPos.z)
+
+                    -- Add ox_target if enabled
+                    if Config.oxtarget then
+                        devPrint("Adding ox_target interaction to fast travel post")
+                        exports.ox_target:addLocalEntity(finalObject, {
+                            {
+                                name = 'fastTravelInteraction' .. finalObject,
+                                label = _U('OpenFastTravel'),
+                                icon = 'fa-solid fa-route',
+                                onSelect = function()
+                                    devPrint("Opening fast travel menu via ox_target")
+                                    Tpmenu()
+                                end,
+                                distance = Config.oxdistance
+                            }
+                        })
+                    else
+                        -- Default prompt handling for non-ox_target usage
+                        Citizen.CreateThread(function()
+                            while DoesEntityExist(finalObject) do
+                                Wait(5)
+                                local playerCoords = GetEntityCoords(PlayerPedId())
+                                local dist = GetDistanceBetweenCoords(newObjectPos.x, newObjectPos.y, newObjectPos.z, playerCoords.x, playerCoords.y, playerCoords.z, true)
+                                if dist < 2 then
+                                    PromptGroupTravel:ShowGroup(_U('OpenFastTravel'))
+                                    if PlaceFastTravelPrompt:HasCompleted() then
+                                        devPrint("Opening fast travel menu via prompt")
+                                        Tpmenu()
+                                    end
+                                elseif dist > 200 then
+                                    Wait(2000)
+                                end
+                            end
+                        end)
+                    end
                 end
             end
 
@@ -693,18 +856,19 @@ AddEventHandler('bcc-camp:NearTownCheck', function()
     devPrint("Checking if player is near town") -- Dev print
     if not Config.SetCampInTowns then
         outoftown = true
-        if Config.CampItem.enabled and Config.CampItem.RemoveItem then
-            devPrint("Player out of town, removing camp item") -- Dev print
-            TriggerServerEvent('bcc-camp:RemoveCampItem')
-        end
     else
         local pl2 = PlayerPedId()
         for k, e in pairs(Config.Towns) do
             local pl = GetEntityCoords(pl2)
             if GetDistanceBetweenCoords(pl.x, pl.y, pl.z, e.coordinates.x, e.coordinates.y, e.coordinates.z, false) > e.range then
                 outoftown = true
-            else
+            elseif Config.notify == 'vorp' then
                 VORPcore.NotifyRightTip(_U('Tooclosetotown'), 4000)
+                devPrint("Player too close to town") -- Dev print
+                outoftown = false
+                break
+            elseif Config.notify == 'ox' then
+                lib.notify({description = _U('Tooclosetotown'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
                 devPrint("Player too close to town") -- Dev print
                 outoftown = false
                 break
