@@ -3,10 +3,10 @@ Config = {
     defaultlang = 'en_lang',
     ---------------------------- ox_target and ox_lib Configuration ------------------------------------------
 
-    oxtarget = true, -- Enable or disable ox target option for camp interaction.
+    oxtarget = false, -- Enable or disable ox target option for camp interaction.
     oxdistance = 2.0, -- Distance for ox target to work.
 
-    notify = 'ox', -- ox for ox_lib notification vorp for vorp notification
+    notify = 'vorp', -- ox for ox_lib notification vorp for vorp notification
     oxposition = 'center-right', -- Ox notifiation position. use 'top' or 'top-right' or 'top-left' or 'bottom' or 'bottom-right' or 'bottom-left' or 'center-right' or 'center-left'
     oxIconColor = 'white',
     oxstyle = { -- Ox Lib notification css style you can change this as you wish to match for your server theme
@@ -44,13 +44,13 @@ Config = {
     }, --if enabled is true then you will need to use the CampItem to set tent make sure the item exists in your database if removeitem is true it will remove 1 of the item from the players inventory when they set camp
 
     -- Discord Webhooks
-    discordLog = true, -- Enable disable discord logs
-    WebhookLink = 'https://discord.com/api/webhooks/1296030989289787423/Ju0u_WFAfn-lnSEfYV4MwoNpi3dfRLyNXtweV5bxh2Wl-wN5GkD1fa1I8l9g4LAXPw4i', --insert your webhook link here if you want webhooks
-    WebhookTitle = 'Frontline County Sri Lanka',
-    WebhookAvatar = 'https://raw.githubusercontent.com/MrTerabyteLK/frontline-resources/refs/heads/main/Frontline-County-Sri-Lanka-Images/frontline-county-sri-lanka-low-size-logo.jpg',
+    discordLog = false, -- Enable disable discord logs
+    WebhookLink = '', --insert your webhook link here if you want webhooks
+    WebhookTitle = '',
+    WebhookAvatar = '',
     
     -- Enable or disable ox logging DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU DOING (You can use this for Loki, Datadog, FiveManage, Gray Log. Refer the ox_lib documentation)
-    oxLogger = true,
+    oxLogger = false,
 
     CommandName = 'SetTent', --name of the command to set the tent
     SetCampInTowns = true, --If false players will be able to set camp inside of towns
