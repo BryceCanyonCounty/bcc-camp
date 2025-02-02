@@ -80,6 +80,8 @@ end)
 -- Save camp data including tent coordinates, furniture, and tent model
 RegisterServerEvent('bcc-camp:saveCampData')
 AddEventHandler('bcc-camp:saveCampData', function(tentCoords, furnitureCoords, tentModel)
+    local playerLicenseKey = GetPlayerIdentifierByType(source, 'license'):gsub('license:', '')
+    local playerDisocrdID = GetPlayerIdentifierByType(source, 'discord'):gsub('discord:', '')
     local src = source
     local character = VORPcore.getUser(src).getUsedCharacter
     local campCoords = json.encode(tentCoords)
@@ -105,8 +107,35 @@ AddEventHandler('bcc-camp:saveCampData', function(tentCoords, furnitureCoords, t
     if #result == 0 then
         -- Insert new camp (tent)
         MySQL.insert("INSERT INTO bcc_camp (`charidentifier`, `firstname`, `lastname`, `campname`, `stash`, `camp_coordinates`, `furniture`, `tent_model`) VALUES (@charidentifier, @firstname, @lastname, @campname, @stash, @camp_coordinates, @furniture, @tent_model)", param)
-        VORPcore.NotifyRightTip(src, "Camp created successfully", 4000)
-        Discord:sendMessage("**Camp Created**\nCharacter: " .. character.firstname .. " " .. character.lastname .. "\nCamp Name: " .. param['campname'] .. "\nCoordinates: " .. campCoords)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('campCreated'), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('campCreated'), duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
+        if Config.discordLog then
+            Discord:sendMessage(_U('disLogCampCreated') .. '\n' .. 
+            _U('disLogCharacter') .. character.firstname .. " " .. character.lastname .. '\n' ..
+            _U('disLogCampCords') .. campCoords)
+        end
+        if Config.oxLogger then
+            local function formatCoords(jsonString)
+                -- Extract numeric values for z, y, and x using pattern matching
+                local z = jsonString:match('"z":([%d%.]+)')
+                local y = jsonString:match('"y":([%d%.]+)')
+                local x = jsonString:match('"x":([%d%.]+)')
+                
+                -- Format the output as required
+                return string.format("z %s y %s x %s", z, y, x)
+            end
+            
+            -- Format the JSON data
+            local formattedCoords = formatCoords(campCoords)
+            lib.logger(src, _U('oxLogCampEvent'), _U('oxLogMessageStart') .. character.firstname .. ' ' .. character.lastname .. _U('oxLogCampCreated'), 
+            _U('oxLogPID') .. src, 
+            _U('oxLogDiscordId') .. playerDisocrdID, 
+            _U('oxLogLicenseKey') .. playerLicenseKey, 
+            _U('oxLogCampCords') .. formattedCoords)
+        end
         devPrint("Camp created for charIdentifier: " .. character.charIdentifier)
     else
         -- Update the existing camp coordinates and furniture
@@ -116,7 +145,11 @@ AddEventHandler('bcc-camp:saveCampData', function(tentCoords, furnitureCoords, t
             ['@furniture'] = furniture,
             ['@tent_model'] = tentModel
         })
-        VORPcore.NotifyRightTip(src, "Camp updated", 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('campUpdated'), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('campUpdated'), duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         Discord:sendMessage("**Camp Updated**\nCharacter: " .. character.firstname .. " " .. character.lastname .. "\nUpdated Coordinates: " .. campCoords)
         devPrint("Updated camp coordinates, furniture, and tent model for charIdentifier: " .. character.charIdentifier)
     end
@@ -283,6 +316,8 @@ end)
 -- Insert furniture into camp data
 RegisterServerEvent('bcc-camp:InsertFurnitureIntoCampDB')
 AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
+    local playerLicenseKey = GetPlayerIdentifierByType(source, 'license'):gsub('license:', '')
+    local playerDisocrdID = GetPlayerIdentifierByType(source, 'discord'):gsub('discord:', '')
     local src = source
     local user = VORPcore.getUser(src)
 
@@ -306,7 +341,11 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         for _, furn in ipairs(currentFurniture) do
             if furn.model == furnitureData.model then
                 -- Notify the player that the furniture with the same model already exists
-                VORPcore.NotifyRightTip(src, _U('FurnitureExists', furnitureData.type), 4000)
+                if Config.notify == 'vorp' then
+                    VORPcore.NotifyRightTip(src, _U('FurnitureExists') .. ' ' .. furnitureData.type, 4000)
+                elseif Config.notify == 'ox' then
+                    lib.notify(src, {description = _U('FurnitureExists'), duration = 4000, type = 'inform', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+                end
                 devPrint(furnitureData.type .. " with model " .. furnitureData.model .. " already exists for charidentifier: " .. character.charIdentifier)
                 return
             end
@@ -320,8 +359,24 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         })
 
         devPrint(furnitureData.type .. " successfully inserted into the database for charidentifier: " .. character.charIdentifier)
-        VORPcore.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type), 4000)
-        Discord:sendMessage("**Furniture Inserted**\nCharacter: " .. character.firstname .. " " .. character.lastname .. "\nFurniture Type: " .. furnitureData.type .. "\nModel: " .. furnitureData.model)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('FurniturePlaced') .. ': ' .. furnitureData.type, 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('FurniturePlaced') .. ': ' .. furnitureData.type, duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
+        if Config.discordLog then
+            Discord:sendMessage(_U('disLogFurnitureInsert') .. '\n' .. 
+            _U('disLogCharacter') .. character.firstname .. ' ' .. character.lastname .. '\n' ..
+            _U('disLogFurnitureType') .. furnitureData.type .. '\n' ..
+            _U('disLogFurnitureModel') .. furnitureData.model)
+        end
+
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogFurnitureEvent'), _U('oxLogMessageStart') .. character.firstname .. ' ' .. character.lastname .. _U('oxLogFurnitureInserted'), 
+            _U('oxLogPID') .. src, 
+            _U('oxLogDiscordId') .. playerDisocrdID, 
+            _U('oxLogLicenseKey') .. playerLicenseKey)
+        end
     else
         -- If no furniture exists, create a new entry with the first piece of furniture
         local newFurniture = {furnitureData}
@@ -332,7 +387,11 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         })
 
         devPrint(furnitureData.type .. " inserted as new furniture into the database for charidentifier: " .. character.charIdentifier)
-        VORPcore.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type), 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('FurniturePlaced') .. ': ' .. furnitureData.type, 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('FurniturePlaced') .. ': ' .. furnitureData.type, duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         Discord:sendMessage("**New Furniture Inserted**\nCharacter: " .. character.firstname .. " " .. character.lastname .. "\nFurniture Type: " .. furnitureData.type .. "\nModel: " .. furnitureData.model)
     end
 end)
@@ -340,6 +399,8 @@ end)
 -- Server-side: Delete camp from the database
 RegisterServerEvent('bcc-camp:DeleteCamp')
 AddEventHandler('bcc-camp:DeleteCamp', function()
+    local playerLicenseKey = GetPlayerIdentifierByType(source, 'license'):gsub('license:', '')
+    local playerDisocrdID = GetPlayerIdentifierByType(source, 'discord'):gsub('discord:', '')
     local src = source
     local user = VORPcore.getUser(src)
 
@@ -357,10 +418,23 @@ AddEventHandler('bcc-camp:DeleteCamp', function()
     MySQL.update("DELETE FROM bcc_camp WHERE charidentifier = @charidentifier", { ['@charidentifier'] = charIdentifier })
 
     -- Notify the client that the camp has been deleted
-    VORPcore.NotifyRightTip(src, "Camp deleted successfully", 4000)
+    if Config.notify == 'vorp' then
+        VORPcore.NotifyRightTip(src, _U('campDeleted'), 4000)
+    elseif Config.notify == 'ox' then
+        lib.notify(src, {description = _U('campDeleted'), duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+    end
     TriggerEvent('bcc-camp:loadCampData')
     -- Send a Discord notification for logging purposes
-    Discord:sendMessage("**Camp Deleted**\nCharacter: " .. character.firstname .. " " .. character.lastname)
+    if Config.discordLog then
+        Discord:sendMessage(_U('disLogCampDeleted') .. '\n' .. 
+        _U('disLogCharacter') .. character.firstname .. " " .. character.lastname)
+    end
+    if Config.oxLogger then
+        lib.logger(src, _U('oxLogCampRemoveEvent'), _U('oxLogMessageStart') .. character.firstname .. ' ' .. character.lastname .. _U('oxLogCampRemoved'), 
+        _U('oxLogPID') .. src, 
+        _U('oxLogDiscordId') .. playerDisocrdID, 
+        _U('oxLogLicenseKey') .. playerLicenseKey)
+    end
     if Config.CampItem.enabled then
         if Config.CampItem.GiveBack then
             exports.vorp_inventory:addItem(src, Config.CampItem.CampItem, 1)
@@ -372,6 +446,8 @@ end)
 -- Server-side: Remove furniture from the database
 RegisterServerEvent('bcc-camp:removeFurnitureFromDB')
 AddEventHandler('bcc-camp:removeFurnitureFromDB', function(furnitureType)
+    local playerLicenseKey = GetPlayerIdentifierByType(source, 'license'):gsub('license:', '')
+    local playerDisocrdID = GetPlayerIdentifierByType(source, 'discord'):gsub('discord:', '')
     local src = source
     local user = VORPcore.getUser(src)
     
@@ -410,14 +486,32 @@ AddEventHandler('bcc-camp:removeFurnitureFromDB', function(furnitureType)
         })
 
         -- Notify the client that the furniture was removed
-        VORPcore.NotifyRightTip(src, "Furniture removed successfully", 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('furnitureRemoved'), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('furnitureRemoved'), duration = 4000, type = 'success', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         devPrint("Furniture removed successfully for character ID: " .. tostring(charIdentifier)) -- Dev print
 
         -- Send Discord notification
-        Discord:sendMessage("**Furniture Removed**\nCharacter: " .. character.firstname .. " " .. character.lastname .. "\nRemoved Furniture: " .. furnitureType)
+        if Config.discordLog then
+            Discord:sendMessage(_U('disLogFurnitureRemoved') .. '\n' .. 
+            _U('disLogCharacter') .. character.firstname .. ' ' .. character.lastname .. '\n' .. 
+            _U('disLogRemovedFurniture') .. furnitureType)
+        end
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogFurnitureRemoveEvent'), _U('oxLogMessageStart') .. character.firstname .. ' ' .. character.lastname .. _U('oxLogFurnitureRemoved'), 
+            _U('oxLogPID') .. src, 
+            _U('oxLogDiscordId') .. playerDisocrdID, 
+            _U('oxLogLicenseKey') .. playerLicenseKey)
+        end
     else
         -- No furniture found
-        VORPcore.NotifyRightTip(src, "No furniture found to remove", 4000)
+        if Config.notify == 'vorp' then
+            VORPcore.NotifyRightTip(src, _U('noFurniture'), 4000)
+        elseif Config.notify == 'ox' then
+            lib.notify(src, {description = _U('noFurniture'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
+        end
         devPrint("No furniture found for character ID: " .. tostring(charIdentifier)) -- Dev print
     end
 end)

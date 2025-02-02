@@ -42,7 +42,7 @@ Locales['en_lang'] = {
     FurnMenu = 'Furniture Menu',
     MoveAroundToPlace = 'Move around to place',
     MoveAndPlace = 'Move around and place',
-    cannotBuildNear = 'Cannot build near tent',
+    cannotBuildNear = 'Too close to tent or object',
     camp = 'Camp',
     manageCamp = 'Manage Camp',
     place = 'Place ',
@@ -52,7 +52,11 @@ Locales['en_lang'] = {
     extinguishCampfire = 'Extinguish the campfire',
     chestPlacement = 'Storage Chest Placement',
     placeChest = 'Place Storage Chest',
-
+    campCreated = 'Camp created successfully',
+    campUpdated = 'Camp updated successfully',
+    campDeleted = 'Camp deleted successfully',
+    furnitureRemoved = 'Furniture removed successfully',
+    noFurniture = 'No furniture found to remove',
     backButton = 'Back',
     closeButton = 'Close',
     furnitureMenu = 'Furniture Menu',
@@ -72,5 +76,32 @@ Locales['en_lang'] = {
     FurnitureTypes = 'Furniture Types',
     FurnitureExists = 'Furniture Exists',
     FurniturePlaced = 'Furniture Placed',
-    FurnitureCancel = 'Cancel Placement'
+    FurnitureCancel = 'Cancel Placement',
+
+    -- Discord webhook log related
+    disLogCampCreated = 'Camp Created',
+    disLogCharacter = 'Character: ',
+    disLogCampCords = 'Coordinates: ',
+    disLogFurnitureInsert = 'Furniture Inserted',
+    disLogFurnitureType = 'Furniture Type: ',
+    disLogFurnitureModel = 'Furniture Model: ',
+    disLogFurnitureRemoved = 'Furniture Removed',
+    disLogRemovedFurniture = 'Removed Furniture: ',
+    disLogCampDeleted = 'Camp Deleted',
+    
+    -- Ox Logger Related
+    oxLogCampEvent = 'BCC Camp Created',
+    oxLogMessageStart = 'BCC Camp: Player ',
+    oxLogCampCreated = ' created a camp.',
+    oxLogPID = 'PID: ',
+    oxLogDiscordId = "Logged Discord ID: ",
+    oxLogLicenseKey = 'Logged License Key: ',
+    oxLogCampCords = 'Camp Coordinates: ',
+    oxLogFurnitureEvent = 'BCC Camp Furniture Inserted',
+    oxLogFurnitureInserted = ' inserted a furniture to the camp.',
+    oxLogFurnitureRemoveEvent = 'BCC Camp Furniture Removed',
+    oxLogFurnitureRemoved = ' removed a furniture from the camp.',
+    oxLogCampRemoveEvent = 'BCC Camp Removed',
+    oxLogCampRemoved = " removed a camp.",
+
 }

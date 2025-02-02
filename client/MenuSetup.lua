@@ -23,18 +23,14 @@ function MainTentmenu(furntype, model)
     }, function()
         if Config.Cooldown then
             if not cdown then
-                if Config.CampItem.enabled then
-                    TriggerServerEvent('bcc-camp:RemoveCampItem')
-                end
                 cdown = true
                 FurnModelMenu('Tent') -- Only shows tent models
-            else
+            elseif Config.notify == 'vorp' then
                 VORPcore.NotifyRightTip(_U('Cdown'), 4000)
+            elseif Config.notify == 'ox' then
+                lib.notify({description = _U('Cdown'), duration = 4000, type = 'error', iconColor = Config.oxIconColor, style = Config.oxstyle, position = Config.oxposition})
             end
         else
-            if Config.CampItem.enabled then
-                TriggerServerEvent('bcc-camp:RemoveCampItem')
-            end
             FurnModelMenu('Tent') -- Only shows tent models
         end
     end)
@@ -331,6 +327,8 @@ function FurnModelMenu(furntype)
                 BCCcampMenu:Close()
                 if furntype == 'Tent' then
                     spawnTent(v.hash)           -- Spawn the tent specifically
+                elseif furntype =='StorageChest' then
+                    spawnStorageChest(v.hash)
                 else
                     spawnItem(furntype, v.hash) -- Spawn other furniture items
                 end
