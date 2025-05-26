@@ -18,14 +18,14 @@ CreateThread(function()
     -- Add the `condition` column if it doesn't exist
     MySQL.query.await([[
         ALTER TABLE `bcc_camp`
-        ADD COLUMN `condition` INT(11) NOT NULL DEFAULT 100
+        ADD COLUMN IF NOT EXISTS `condition` INT(11) NOT NULL DEFAULT 100
         AFTER `tent_model`;
     ]])
 
     -- Add the `last_updated` column if it doesn't exist
     MySQL.query.await([[
         ALTER TABLE `bcc_camp`
-        ADD COLUMN `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ADD COLUMN IF NOT EXISTS `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         AFTER `condition`;
     ]])
 
