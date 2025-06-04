@@ -319,7 +319,7 @@ function spawnCamp(model)
         Core.NotifyRightTip(_U('CantBuild'), 4000)
         devPrint("Cannot build tent, prop in front or tent already created") -- Dev print
     else
-        progressbarfunc(Config.SetupTime.TentSetuptime, _U('SettingTentPbar'))
+        progressbarfunc(Config.SetupTime.CampSetupTime, _U('SettingTentPbar'))
         modelload(model)
 
         -- Tent Spawn

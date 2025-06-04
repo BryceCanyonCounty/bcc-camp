@@ -78,6 +78,7 @@ Config = {
     InventoryLimit = 200,    --the camps storage limit
 
     SetupTime = {            --time to setup each prop in ms
+        CampSetupTime = 30000, 
         TentSetuptime = 30000,
         BenchSetupTime = 15000,
         FireSetupTime = 10000,
