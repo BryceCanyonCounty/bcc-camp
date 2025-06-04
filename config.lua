@@ -1,6 +1,30 @@
 Config = {
     -- Set Language
     defaultlang = 'en_lang',
+        ---------------------------- ox_target and ox_lib Configuration ------------------------------------------
+
+        oxtarget = true, -- Enable or disable ox target option for camp interaction.
+        oxdistance = 2.0, -- Distance for ox target to work.
+    
+        notify = 'ox', -- ox for ox_lib notification vorp for vorp notification
+        oxposition = 'center-right', -- Ox notifiation position. use 'top' or 'top-right' or 'top-left' or 'bottom' or 'bottom-right' or 'bottom-left' or 'center-right' or 'center-left'
+        oxIconColor = 'white',
+        oxstyle = { -- Ox Lib notification css style you can change this as you wish to match for your server theme
+            backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://cdn.cs1.frontlineesport.com/yGexrZvPOfRu.jpg")', -- Adds a black overlay with a opacity on top of the image
+            backgroundSize = 'cover',           -- Ensures the image covers the entire notification area
+            backgroundRepeat = 'no-repeat',     -- Prevents the image from repeating
+            backgroundPosition = 'center',      -- Centers the image
+            color = '#FFFFFF',                  -- Off-white text color
+            textAlign = 'center',               -- Align the text
+            lineHeight = '1.4',
+            width = 'auto',
+            minWidth = '250px',
+            maxWidth = '500px',
+            ['.description'] = {
+                fontSize = '17px',
+                fontFamily = 'Georgia, Times, Serif',
+            },
+        },
     ---------------------------- Camp Configuration ------------------------------------------
 
     --Blip Setup
@@ -38,9 +62,13 @@ Config = {
 
 
     -- Discord Webhooks
+    discordLog = false, -- Enable disable discord logs
     WebhookLink = '', --insert your webhook link here if you want webhooks
     WebhookTitle = 'BCC-Camp',
     WebhookAvatar = '',
+
+    -- Enable or disable ox logging DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU DOING (You can use this for Loki, Datadog, FiveManage, Gray Log. Refer the ox_lib documentation)
+    oxLogger = false,
 
     CommandName = 'SetTent', --name of the command to set the tent
     SetCampInTowns = true,   --If false players will be able to set camp inside of towns

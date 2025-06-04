@@ -7,6 +7,7 @@ author 'BCC Scripts'
 description 'Create your own camp in RedM!'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     'config.lua',
     'locale.lua',
     'languages/*.lua',
