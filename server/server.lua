@@ -69,11 +69,13 @@ end)
 RegisterServerEvent('bcc-camp:CampInvCreation', function(charid)
     devPrint("Creating camp inventory for charid: " .. tostring(charid))
     
-    local campid = MySQL.query.await(
+    local result = MySQL.query.await(
                        "SELECT id FROM bcc_camp WHERE charidentifier=@charidentifier",
                        {['charidentifier'] = tostring(charid) })
+
+    local campid = result[1] and result[1].id or "" -- Extract the id from the first result
     local data = {
-        id = 'Player_' .. tostring(charid) .. '_bcc-campinv_'.. campid,
+        id = 'Player_' .. tostring(charid) .. '_bcc-campinv_'.. tostring(campid),
         name = _U('InventoryName'),
         limit = Config.InventoryLimit,
         acceptWeapons = false,
