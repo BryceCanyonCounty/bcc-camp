@@ -319,7 +319,7 @@ function spawnCamp(model)
         Core.NotifyRightTip(_U('CantBuild'), 4000)
         devPrint("Cannot build tent, prop in front or tent already created") -- Dev print
     else
-        progressbarfunc(Config.SetupTime.TentSetuptime, _U('SettingTentPbar'))
+        progressbarfunc(Config.SetupTime.CampSetupTime, _U('SettingTentPbar'))
         modelload(model)
 
         -- Tent Spawn
@@ -453,7 +453,6 @@ function spawnItem(furnType, selectedModel, category, propprice)
                 newObjectPos.y, zheight, false, false, false)
             -- Apply the currentHeading rotation
             SetEntityHeading(item_preview, currentHeading)
-            print('old', newObjectPos)
             -- Handle object rotation using the rotation logic
             if RotateLeftPrompt:HasCompleted() then
                 currentHeading = (currentHeading - 6) % 360    -- Rotate left by 1 degree

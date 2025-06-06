@@ -81,5 +81,24 @@ Locales['en_lang'] = {
     FurnitureTypes = 'Furniture Types',
     FurnitureExists = 'Furniture Exists',
     FurniturePlaced = 'Furniture Placed',
-    FurnitureCancel = 'Cancel Placement'
+    FurnitureCancel = 'Cancel Placement',
+
+    -- OX LOG Translations
+    oxLogCampCreated = 'Camp created',
+    oxLogMessageStart = 'Camp created by ',
+    oxLogCampName = 'CampName: ',
+    oxLogCampCoords = 'CampCoords: ',
+    oxLogPID = 'PID: ',
+    oxLogCampUpdated = 'Camp updated',
+    oxLogUpdateMessageStart = 'Camp updated by ',
+    oxLogFurnitureInserted = 'Camp Furniture inserted',
+    oxLogFurnitureInsertMessageStart = 'Camp Furniture inserted by ',
+    oxLogFurnitureType = 'Furniture Type: ',
+    oxLogModel = 'Model: ',
+    oxLogFurnitureInserted = 'Camp Furniture inserted',
+    oxLogFurnitureInsertMessageStart = 'Camp Furniture inserted by ',
+    oxLogCampDeleted = 'Camp deleted',
+    oxLogDeleteMessageStart = 'Camp deleted by ',
+    oxLogFurnitureRemoved = 'Camp Furniture removed',
+    oxLogFurnitureRemoveMessageStart = 'Camp Furniture removed by ',
 }

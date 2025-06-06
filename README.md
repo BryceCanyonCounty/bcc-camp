@@ -11,6 +11,8 @@
 - Everything is easy to configure to your liking via the config.lua file!
 - Versioner to keep upto date on updates!
 - Discord Notifications
+- Configuration option to select the notification type from ox or vorp
+- Configuration option to enable disable discord logs and grafana logs.
 
 ## How it works
 - To set your tent up initally just type in chat the command you set in the config.lua file.
@@ -23,6 +25,9 @@
 - [vorp_character](https://github.com/VORPCORE/vorp_character-lua)
 - [bcc-utils](https://github.com/BryceCanyonCounty/bcc-utils)
 - [feather-menu](https://github.com/FeatherFramework/feather-menu/releases)
+
+## Optional Dependency if You use ox notificaiton or grafana logs
+ - [ox_lib](https://github.com/overextended/ox_lib)
 
 ## Installation
 - Make sure dependencies are installed/updated and ensured before this script

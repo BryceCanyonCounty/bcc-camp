@@ -235,10 +235,10 @@ function FurnitureTypeMenu()
         { value = 'Utilities',   label = "Camp Utilities" },
         { value = 'Furniture',   label = "Camp Furniture" },
         { value = 'Decorations', label = "Camp Decorations" },
-        { value = 'Items',       label = "Personal Items" },
-        { value = 'Sets',        label = "Prop Sets" },
-        { value = 'Native',      label = "Native Furniture" },
-        { value = 'Misc',        label = "Misc Items" },
+        -- { value = 'Items',       label = "Personal Items" },
+        -- { value = 'Sets',        label = "Prop Sets" },
+        -- { value = 'Native',      label = "Native Furniture" },
+        -- { value = 'Misc',        label = "Misc Items" },
 
 
     }

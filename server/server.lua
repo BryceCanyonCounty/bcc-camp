@@ -12,6 +12,18 @@ else
     function devPrint(message) end -- No-op if DevMode is disabled
 end
 
+local function formatCoords(jsonString)
+    local z = jsonString:match('"z":([%-?%d%.]+)')
+    local y = jsonString:match('"y":([%-?%d%.]+)')
+    local x = jsonString:match('"x":([%-?%d%.]+)')
+
+    z = z:gsub("-", "")
+    y = y:gsub("-", "")
+    x = x:gsub("-", "")
+
+    return string.format("x %s y %s z %s", x, y, z)
+end
+
 -- Function to update camp conditions
 RegisterServerEvent('bcc-camp:UpdateCampCondition')
 AddEventHandler('bcc-camp:UpdateCampCondition',
@@ -57,11 +69,13 @@ end)
 RegisterServerEvent('bcc-camp:CampInvCreation', function(charid)
     devPrint("Creating camp inventory for charid: " .. tostring(charid))
     
-    local campid = MySQL.query.await(
+    local result = MySQL.query.await(
                        "SELECT id FROM bcc_camp WHERE charidentifier=@charidentifier",
                        {['charidentifier'] = tostring(charid) })
+
+    local campid = result[1] and result[1].id or "" -- Extract the id from the first result
     local data = {
-        id = 'Player_' .. tostring(charid) .. '_bcc-campinv_'.. campid,
+        id = 'Player_' .. tostring(charid) .. '_bcc-campinv_'.. tostring(campid),
         name = _U('InventoryName'),
         limit = Config.InventoryLimit,
         acceptWeapons = false,
@@ -125,8 +139,8 @@ end)
 ----------------------------------- Camp Data Handling --------------------------------------------
 -- Save camp data including tent coordinates, furniture, and tent model
 RegisterServerEvent('bcc-camp:saveCampData')
-AddEventHandler('bcc-camp:saveCampData',
-                function(tentCoords, furnitureCoords, tentModel)
+AddEventHandler('bcc-camp:saveCampData', function(tentCoords, furnitureCoords, tentModel)
+    
     local src = source
     local character = Core.getUser(src).getUsedCharacter
     local campCoords = json.encode(tentCoords)
@@ -154,11 +168,32 @@ AddEventHandler('bcc-camp:saveCampData',
         MySQL.insert(
             "INSERT INTO bcc_camp (`charidentifier`, `firstname`, `lastname`, `campname`, `stash`, `camp_coordinates`, `furniture`, `tent_model`) VALUES (@charidentifier, @firstname, @lastname, @campname, @stash, @camp_coordinates, @furniture, @tent_model)",
             param)
-        Core.NotifyRightTip(src, "Camp created successfully", 4000)
-        Discord:sendMessage("**Camp Created**\nCharacter: " ..
-                                character.firstname .. " " .. character.lastname ..
-                                "\nCamp Name: " .. param['campname'] ..
-                                "\nCoordinates: " .. campCoords)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "Camp created successfully", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "Camp created successfully",
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
+        if Config.discordlog then     
+            Discord:sendMessage("**Camp Created**\nCharacter: " ..
+                                    character.firstname .. " " .. character.lastname ..
+                                    "\nCamp Name: " .. param['campname'] ..
+                                    "\nCoordinates: " .. campCoords)
+        end
+        if Config.oxLogger then
+            -- Fromat the JSON data
+            local formattedCoords = formatCoords(campCoords)
+            lib.logger(src, _U('oxLogCampCreated'), _U('oxLogMessageStart') ..
+                character.firstname .. ' ' .. character.lastname,
+                _U('oxLogCampName') .. param['campname'],
+                _U('oxLogCampCoords') .. formattedCoords,
+                _U('oxLogPID') .. src)
+        end
         devPrint("Camp created for charIdentifier: " .. character.charIdentifier)
     else
         -- Update the existing camp coordinates and furniture
@@ -170,10 +205,31 @@ AddEventHandler('bcc-camp:saveCampData',
                 ['@furniture'] = furniture,
                 ['@tent_model'] = tentModel
             })
-        Core.NotifyRightTip(src, "Camp updated", 4000)
-        Discord:sendMessage("**Camp Updated**\nCharacter: " ..
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "Camp updated successfully", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "Camp updated successfully",
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
+        if Config.discordlog then
+            Discord:sendMessage("**Camp Updated**\nCharacter: " ..
                                 character.firstname .. " " .. character.lastname ..
                                 "\nUpdated Coordinates: " .. campCoords)
+        end
+        if Config.oxLogger then
+            -- Fromat the JSON data
+            local formattedCoords = formatCoords(campCoords)
+            lib.logger(src, _U('oxLogCampUpdated'), _U('oxLogUpdateMessageStart') ..
+                character.firstname .. ' ' .. character.lastname,
+                _U('oxLogCampName') .. param['campname'],
+                _U('oxLogCampCoords') .. formattedCoords,
+                _U('oxLogPID') .. src)
+        end
         devPrint(
             "Updated camp coordinates, furniture, and tent model for charIdentifier: " ..
                 character.charIdentifier)
@@ -257,7 +313,6 @@ AddEventHandler('bcc-camp:loadCampData', function()
             -- If model is missing or incorrect, insert correct model
             if not modelHash or not isModelInConfig(correctType, modelHash) then
                 local correctModel = getCorrectFurnitureModel(correctType)
-                print(correctModel)
                 if correctModel then
                     devPrint(
                         "Updating model for type " .. correctType .. " to " ..
@@ -389,8 +444,18 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         for _, furn in ipairs(currentFurniture) do
             if furn.model == furnitureData.model then
                 -- Notify the player that the furniture with the same model already exists
-                Core.NotifyRightTip(src, _U('FurnitureExists',
-                                                furnitureData.type), 4000)
+                if Config.notify == "vorp" then
+                    Core.NotifyRightTip(src, _U('FurnitureExists',
+                                                    furnitureData.type), 4000)
+                elseif Config.notify == "ox" then
+                    lib.notify(src, {
+                        description = _U('FurnitureExists', furnitureData.type),
+                        duration = 4000,
+                        type = 'error',
+                        style = Config.oxstyle,
+                        position = Config.oxposition
+                    })
+                end
                 devPrint(furnitureData.type .. " with model " ..
                              furnitureData.model ..
                              " already exists for charidentifier: " ..
@@ -411,13 +476,32 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         devPrint(furnitureData.type ..
                      " successfully inserted into the database for charidentifier: " ..
                      character.charIdentifier)
-        Core.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type),
-                                4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type),
+                                    4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = _U('FurniturePlaced', furnitureData.type),
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
         character.removeCurrency(0, furnitureData.price)
-        Discord:sendMessage("**Furniture Inserted**\nCharacter: " ..
-                                character.firstname .. " " .. character.lastname ..
-                                "\nFurniture Type: " .. furnitureData.type ..
-                                "\nModel: " .. furnitureData.model)
+        if Config.discordlog then
+            Discord:sendMessage("**Furniture Inserted**\nCharacter: " ..
+                                    character.firstname .. " " .. character.lastname ..
+                                    "\nFurniture Type: " .. furnitureData.type ..
+                                    "\nModel: " .. furnitureData.model)
+        end
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogFurnitureInserted'),
+                _U('oxLogFurnitureInsertMessageStart') .. character.firstname .. ' ' ..
+                    character.lastname .. _U('oxLogFurnitureType') ..
+                    furnitureData.type .. _U('oxLogModel') .. furnitureData.model,
+                _U('oxLogPID') .. src)
+        end
 
     else
         -- If no furniture exists, create a new entry with the first piece of furniture
@@ -433,13 +517,33 @@ AddEventHandler('bcc-camp:InsertFurnitureIntoCampDB', function(furnitureData)
         devPrint(furnitureData.type ..
                      " inserted as new furniture into the database for charidentifier: " ..
                      character.charIdentifier)
-        Core.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type),
-                                4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, _U('FurniturePlaced', furnitureData.type),
+                                    4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = _U('FurniturePlaced', furnitureData.type),
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
         character.removeCurrency(0, furnitureData.price)
-        Discord:sendMessage("**New Furniture Inserted**\nCharacter: " ..
-                                character.firstname .. " " .. character.lastname ..
-                                "\nFurniture Type: " .. furnitureData.type ..
-                                "\nModel: " .. furnitureData.model)
+        if Config.discordlog then
+            Discord:sendMessage("**New Furniture Inserted**\nCharacter: " ..
+                                    character.firstname .. " " .. character.lastname ..
+                                    "\nFurniture Type: " .. furnitureData.type ..
+                                    "\nModel: " .. furnitureData.model)
+        end
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogFurnitureInserted'),
+                _U('oxLogFurnitureInsertMessageStart') .. character.firstname .. ' ' ..
+                    character.lastname .. _U('oxLogFurnitureType') ..
+                    furnitureData.type .. _U('oxLogModel') .. furnitureData.model,
+                _U('oxLogPID') .. src, "CharacterID: " ..
+                    character.charIdentifier)
+        end
 
     end
 end)
@@ -470,17 +574,44 @@ AddEventHandler('bcc-camp:DeleteCamp', function()
         -- Notify the client that the camp has been deleted
         TriggerEvent('bcc-camp:loadCampData')
         -- Send a Discord notification for logging purposes
-        Discord:sendMessage("**Camp Deleted**\nCharacter: " ..
-                                character.firstname .. " " .. character.lastname)
+        if Config.discordlog then
+            Discord:sendMessage("**Camp Deleted**\nCharacter: " ..
+                                    character.firstname .. " " .. character.lastname)
+        end
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogCampDeleted'),
+                _U('oxLogDeleteMessageStart') .. character.firstname .. ' ' ..
+                    character.lastname, _U('oxLogPID') .. src)
+        end
         if Config.CampItem.enabled then
             if Config.CampItem.GiveBack then
                 exports.vorp_inventory:addItem(src, Config.CampItem.CampItem, 1)
             end
             TriggerClientEvent('bcc-camp:DeleteCampFurniture', src)
         end
-        Core.NotifyRightTip(src, "Camp deleted successfully", 4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "Camp deleted successfully", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "Camp deleted successfully",
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
     else
-        Core.NotifyRightTip(src, "You are not the camp owner", 4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "You are not the camp owner", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "You are not the camp owner",
+                duration = 4000,
+                type = 'error',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
     end
 end)
 
@@ -530,18 +661,46 @@ AddEventHandler('bcc-camp:removeFurnitureFromDB', function(furnitureType,model,p
             })
 
         -- Notify the client that the furniture was removed
-        Core.NotifyRightTip(src, "Furniture removed successfully", 4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "Furniture removed successfully", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "Furniture removed successfully",
+                duration = 4000,
+                type = 'success',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
         character.addCurrency(0, price)
         devPrint("Furniture removed successfully for character ID: " ..
                      tostring(charIdentifier)) -- Dev print
 
         -- Send Discord notification
-        Discord:sendMessage("**Furniture Removed**\nCharacter: " ..
-                                character.firstname .. " " .. character.lastname ..
-                                "\nRemoved Furniture: " .. furnitureType)
+        if Config.discordlog then
+            Discord:sendMessage("**Furniture Removed**\nCharacter: " ..
+                                    character.firstname .. " " .. character.lastname ..
+                                    "\nRemoved Furniture: " .. furnitureType)
+        end
+        if Config.oxLogger then
+            lib.logger(src, _U('oxLogFurnitureRemoved'),
+                _U('oxLogFurnitureRemoveMessageStart') .. character.firstname .. ' ' ..
+                    character.lastname .. _U('oxLogFurnitureType') .. furnitureType,
+                _U('oxLogPID') .. src)
+        end
     else
         -- No furniture found
-        Core.NotifyRightTip(src, "No furniture found to remove", 4000)
+        if Config.notify == "vorp" then
+            Core.NotifyRightTip(src, "No furniture found to remove", 4000)
+        elseif Config.notify == "ox" then
+            lib.notify(src, {
+                description = "No furniture found to remove",
+                duration = 4000,
+                type = 'error',
+                style = Config.oxstyle,
+                position = Config.oxposition
+            })
+        end
         devPrint("No furniture found for character ID: " ..
                      tostring(charIdentifier)) -- Dev print
     end
@@ -711,7 +870,7 @@ AddEventHandler('bcc-camp:AddCampMember', function(charid)
     devPrint("Updated members: " .. json.encode(currentMembers))
 end)
 
-Core.Callback.Register('bcc-camp:CheckMoney', function(source, callback, data)
+Core.Callback.Register('bcc-camp:CheckMoney', function(source, callback, price)
     local _source = source
     local user = Core.getUser(_source)
     if not user then
@@ -719,7 +878,7 @@ Core.Callback.Register('bcc-camp:CheckMoney', function(source, callback, data)
         return
     end
     local Character = user.getUsedCharacter
-    if Character.money >= data.price then
+    if Character.money >= price then
         callback(true)
     else
         callback(false)
