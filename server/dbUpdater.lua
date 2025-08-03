@@ -29,6 +29,13 @@ CreateThread(function()
         AFTER `condition`;
     ]])
 
+    -- Add the `last_updated` column if it doesn't exist
+    MySQL.query.await([[
+        ALTER TABLE `bcc_camp`
+        ADD COLUMN IF NOT EXISTS `members` longtext DEFAULT NULL
+        AFTER `last_updated`;
+    ]])
+
     -- Print a success message to the console
     print("Database tables for \x1b[35m\x1b[1m*bcc-camp*\x1b[0m created or updated \x1b[32msuccessfully\x1b[0m.")
 end)

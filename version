@@ -1,9 +1,1 @@
-<1.1.1>
-- DBUpdater bugfix
-<1.1.0>
-Thanks to Jannings
-- rework on furniture classification and placement
-- fixed heading of props
-- fixed camp storage
-- added camp member system
-- added camp condition system that functions like taxes, and can be raised by donating items
+<1.2.0>
