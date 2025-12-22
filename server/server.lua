@@ -100,7 +100,13 @@ RegisterServerEvent('bcc-camp:OpenInv', function()
         return
     end
     local Character = user.getUsedCharacter
-    exports.vorp_inventory:openInventory(src, 'Player_' .. Character.charIdentifier .. '_bcc-campinv')
+    local result = MySQL.query.await(
+                       "SELECT id FROM bcc_camp WHERE charidentifier=@charidentifier",
+                       {['charidentifier'] = tostring(Character.charIdentifier) })
+
+    local campid = result[1] and result[1].id or "" -- Extract the id from the first result
+    
+    exports.vorp_inventory:openInventory(src, 'Player_' .. Character.charIdentifier .. '_bcc-campinv_'.. tostring(campid)
     devPrint("Opened camp inventory for charIdentifier: " ..
                  Character.charIdentifier)
 end)
