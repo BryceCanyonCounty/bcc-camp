@@ -26,7 +26,7 @@ server_scripts {
     'server/server.lua',
 }
 
-version '1.2.0'
+version '1.2.1'
 
 dependencies {
     'vorp_core',
@@ -36,3 +36,4 @@ dependencies {
     'feather-progressbar',
     'bcc-utils'
 }
+
