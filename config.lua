@@ -4,7 +4,7 @@ Config = {
 
     ---------------------------- ox_target and ox_lib Configuration ------------------------------------------
 
-    oxtarget = true, -- Enable or disable ox target option for camp interaction.
+    oxtarget = false, -- Enable or disable ox target option for camp interaction.
     oxdistance = 2.0, -- Distance for ox target to work.
 
     notify = 'ox', -- ox for ox_lib notification vorp for vorp notification
@@ -430,3 +430,4 @@ Config = {
         },                                                           --You can add more towns by copy and pasting one of the tables above and changing the coords and range to your liking
     },
 }
+
