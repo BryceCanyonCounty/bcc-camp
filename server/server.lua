@@ -106,7 +106,7 @@ RegisterServerEvent('bcc-camp:OpenInv', function()
 
     local campid = result[1] and result[1].id or "" -- Extract the id from the first result
     
-    exports.vorp_inventory:openInventory(src, 'Player_' .. Character.charIdentifier .. '_bcc-campinv_'.. tostring(campid)
+    exports.vorp_inventory:openInventory(src, 'Player_' .. Character.charIdentifier .. '_bcc-campinv_'.. tostring(campid))
     devPrint("Opened camp inventory for charIdentifier: " ..
                  Character.charIdentifier)
 end)
